@@ -8,10 +8,10 @@ import { css } from 'emotion';
 import Sidebar from '../components/Sidebar';
 
 const pageTop = css`
-  margin-top: 3.5rem;
+  margin-top: 0rem;
 `;
 
-const HowItWorks = () => {
+const Lists = () => {
   const something = 0;
   return (
     <Split flex="right" mt={something} className={pageTop}>
@@ -25,4 +25,4 @@ const HowItWorks = () => {
   );
 };
 
-export default HowItWorks;
+export default Lists;
