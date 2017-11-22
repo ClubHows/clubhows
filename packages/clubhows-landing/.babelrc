@@ -1,0 +1,13 @@
+// This babelrc is only needed for jest to work properly
+{
+
+  "env": {
+    "production": {
+      "plugins": ["grommet"]
+    },
+    "test": {
+      "presets": ["env", "react"],
+      "plugins": ["babel-plugin-emotion"]
+    }
+  }
+}
