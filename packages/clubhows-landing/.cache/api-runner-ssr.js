@@ -1,0 +1,39 @@
+var plugins = [{
+      plugin: require('/Users/barrylow/Business/land-of-here-labs/clubhows/packages/clubhows-landing/node_modules/gatsby-plugin-google-analytics/gatsby-ssr.js'),
+      options: {"plugins":[],"trackingId":""},
+    },{
+      plugin: require('/Users/barrylow/Business/land-of-here-labs/clubhows/packages/clubhows-landing/node_modules/gatsby-plugin-styled-components/gatsby-ssr.js'),
+      options: {"plugins":[]},
+    },{
+      plugin: require('/Users/barrylow/Business/land-of-here-labs/clubhows/packages/clubhows-landing/node_modules/gatsby-plugin-emotion/gatsby-ssr.js'),
+      options: {"plugins":[]},
+    }]
+// During bootstrap, we write requires at top of this file which looks like:
+// var plugins = [
+//   require('/path/to/plugin1/gatsby-ssr.js'),
+//   require('/path/to/plugin2/gatsby-ssr.js'),
+// ]
+
+const apis = require(`./api-ssr-docs`)
+
+module.exports = (api, args, defaultReturn) => {
+  if (!apis[api]) {
+    console.log(`This API doesn't exist`, api)
+  }
+  // Run each plugin in series.
+  let results = plugins.map(plugin => {
+    if (plugin.plugin[api]) {
+      const result = plugin.plugin[api](args, plugin.options)
+      return result
+    }
+  })
+
+  // Filter out undefined results.
+  results = results.filter(result => typeof result !== `undefined`)
+
+  if (results.length > 0) {
+    return results
+  } else {
+    return [defaultReturn]
+  }
+}
