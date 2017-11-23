@@ -116,13 +116,14 @@ const introButton = css`
 
 export default () => (
   <div>
-    <Box bg={colors.primary} className={introBox} pad="medium">
+    <Box bg={colors.primary} className={introBox} pad={{ between: 'none' }}>
       <Box
         align="center"
         wrap
         className={introContent}
         justify="end"
         alignContent="end"
+        pad={{ between: 'none' }}
       >
         <h1 className={introTitle}>
           ClubHows simplifies the complex details between people and spaces
