@@ -1,10 +1,4 @@
 import React from "react"
-import faviconApple from '../static/apple-touch-icon.png'
-import favicon32 from '../static/favicon-32x32.png'
-import favicon16 from '../static/favicon-16x16.png'
-import manifest from '../static/manifest.json'
-import safariPinned from '../static/safari-pinned-tab.svg'
-import faviconICO from '../static/favicon.ico'
 // import browserConfig from './static/browserconfig.xml'
 
 let stylesStr
@@ -36,12 +30,13 @@ module.exports = class HTML extends React.Component {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <link rel="apple-touch-icon" sizes="180x180" href={faviconApple} />
-          <link rel="icon" type="image/png" sizes="32x32" href={favicon32} />
-          <link rel="icon" type="image/png" sizes="16x16" href={favicon16} />
-          <link rel="manifest" href={manifest} />
-          <link rel="mask-icon" href={safariPinned} color="#a89472" />
-          <link rel="shortcut icon" href={faviconICO} />
+          <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png'" />
+          <link rel="manifest" href="manifest.json" />
+          <link rel="mask-icon" href="safari-pinned-tab.svg" color="#a89472" />
+          <link rel="shortcut icon" href="favicon.ico" />
+          <meta name="msapplication-config" content="browserconfig.xml" />
           <meta name="theme-color" content="#ffffff" />
           {this.props.headComponents}
           {css}
