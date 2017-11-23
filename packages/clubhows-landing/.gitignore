@@ -60,5 +60,5 @@ typings/
 .env.development
 
 # gatsby specific folders
-public/
+# public/
 .cache/
