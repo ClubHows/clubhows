@@ -3,6 +3,7 @@ import Link from 'gatsby-link';
 import { css } from 'emotion';
 import Box from 'grommet/components/Box';
 import Responsive from 'grommet/utils/Responsive';
+import Anchor from 'grommet/components/Anchor';
 import Button from 'grommet/components/Button';
 import Header from 'grommet/components/Header';
 import Heading from 'grommet/components/Heading';
@@ -44,7 +45,6 @@ class Navigation extends Component {
       mobile: false
     };
     this.onResponsive = this.onResponsive.bind(this);
-    this.toggleNav = this.toggleNav.bind(this);
   }
 
   componentDidMount() {
@@ -60,13 +60,18 @@ class Navigation extends Component {
     this.setState({ mobile: small });
   }
 
-  toggleNav() {
-    if (this.state.mobileActive) {
-      this.setState({ mobileActive: false });
-    } else {
-      this.setState({ mobileActive: true });
-    }
-  }
+  toggleNav = e => {
+    e.preventDefault();
+    this.setState(prevState => ({
+      mobileActive: !prevState.mobileActive
+    }));
+  };
+
+  toggleLink = e => {
+    this.setState(prevState => ({
+      mobileActive: !prevState.mobileActive
+    }));
+  };
 
   toggleSignUp = e => {
     e.preventDefault();
@@ -148,16 +153,20 @@ class Navigation extends Component {
               </Link>
             </Box>
             <Box flex="shrink" alignSelf="center" pad="small">
-              <Menu onClick={this.toggleNav} onKeyPress={this.toggleNav} />
+              <Anchor
+                icon={<Menu />}
+                onClick={this.toggleNav}
+                id="mobileMenu"
+              />
             </Box>
           </Box>
         )}
-        {this.state.signupActive && (
+        {this.state.mobileActive && (
           <Layer
             flush
             closer
             onClose={this.toggleSignup}
-            hidden={!this.state.signuptActive}
+            hidden={!this.state.mobileActive}
           >
             <div onCancel={this.toggleNav} onSubmit={this.toggleNav} />
             <Box pad="small" direction="column">
@@ -171,8 +180,7 @@ class Navigation extends Component {
                 <ListItem separator="none" align="stretch">
                   <Link
                     to="/"
-                    onClick={this.toggleNav}
-                    onKeyPress={this.toggleNav}
+                    onClick={this.toggleLink}
                     className={mobileMenu}
                     style={{ display: 'inline-block' }}
                   >
@@ -182,8 +190,7 @@ class Navigation extends Component {
                 <ListItem separator="none" textAlign="center">
                   <Link
                     to="/how-it-works"
-                    onClick={this.toggleNav}
-                    onKeyPress={this.toggleNav}
+                    onClick={this.toggleLink}
                     className={mobileMenu}
                   >
                     <Heading tag="h3">How It Works</Heading>
@@ -192,8 +199,7 @@ class Navigation extends Component {
                 <ListItem separator="none" textAlign="center">
                   <Link
                     to="/about"
-                    onClick={this.toggleNav}
-                    onKeyPress={this.toggleNav}
+                    onClick={this.toggleLink}
                     className={mobileMenu}
                   >
                     <Heading tag="h3">About ClubHows</Heading>
