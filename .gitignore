@@ -1,6 +1,9 @@
 # gatsby
-.cache
-public
+.cache/
+.cache/*
+packages/clubhows-landing/.cache/
+public/
+public/*
 
 node_modules/
 package-lock.json
