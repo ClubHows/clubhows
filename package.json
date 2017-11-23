@@ -7,5 +7,9 @@
 		"commitizen": {
 			"path": "./node_modules/cz-lerna-changelog"
 		}
+	},
+	"scripts": {
+		"push-landing": "git subtree push --prefix packages/clubhows-landing/public origin deploy-landing",
+		"push-server": "git subtree push --prefix packages/clubhows-server clubhows deploy-server"
 	}
 }
