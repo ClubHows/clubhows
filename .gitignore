@@ -1,4 +1,7 @@
-.next
+# gatsby
+.cache
+public
+
 node_modules/
 package-lock.json
 .graphcoolrc
