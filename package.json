@@ -9,7 +9,7 @@
 		}
 	},
 	"scripts": {
-		"push-landing": "git subtree push --prefix packages/clubhows-landing/public origin deploy-landing",
+		"push-landing": "git add packages/clubhows-landing/public && git commit -m 'landing push' --no-verify && git push orign `git subtree push --prefix packages/clubhows-landing/public origin deploy-landing`:deploy-landing --force && git rm -r --cached packages/clubhows-landing/public/",
 		"push-server": "git subtree push --prefix packages/clubhows-server clubhows deploy-server"
 	}
 }
