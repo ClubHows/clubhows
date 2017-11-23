@@ -3,39 +3,29 @@ import React from 'react';
 import Split from 'grommet/components/Split';
 import Box from 'grommet/components/Box';
 import Heading from 'grommet/components/Heading';
-import List from 'grommet/components/List';
-import ListItem from 'grommet/components/ListItem';
 import { css } from 'emotion';
 
+import Sidebar from '../components/Sidebar';
+
 const pageTop = css`
-  margin-top: 3.5rem;
+  margin-top: 0rem;
 `;
 
 const About = () => {
   const something = 0;
   return (
     <Split flex="right" mt={something} className={pageTop}>
-      <Box
-        full="vertical"
-        colorIndex="brand"
-        justify="start"
-        align="start"
-        wrap
-        pad="medium"
-      >
-        <Heading tag="h3" margin="small">
-          How It Works
-        </Heading>
-        <List selectable>
-          <ListItem justify="between" separator="horizontal">
-            Teams
-          </ListItem>
-          <ListItem justify="between">Locations</ListItem>
-        </List>
-      </Box>
-      <Box margin={{ horizontal: 'none', vertical: 'large' }} pad="large">
-        <h1>About</h1>
-        <p>This is an example showing the use of &quot;gatsby-image&quot;.</p>
+      <Sidebar colorIndex="neutral-4-a" />
+      <Box margin={{ horizontal: 'none', vertical: 'medium' }} pad="large">
+        <Heading tag="h1">About ClubHows</Heading>
+        <Heading tag="h3">Overview</Heading>
+        <p>
+          This project begin as an experiment to solving the real problems
+          presented by a Boys & Girls club moving into a new clubhouse. The club
+          went from a facility with it&apos;s own maintenace and janitorial
+          management to being fully responsible for all the important details
+          those service groups provide.
+        </p>
       </Box>
     </Split>
   );

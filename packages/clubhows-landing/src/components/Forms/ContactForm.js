@@ -63,7 +63,7 @@ export default class ContactForm extends Component {
     const email = e.target.email.value;
     const message = e.target.message.value;
 
-    console.log(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email));
+    // console.log(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email));
     if (name === '') {
       return this.setState({ nameError: 'Please enter a name.' });
     }
@@ -92,9 +92,9 @@ export default class ContactForm extends Component {
   }
 
   SendEmail = contact => {
-    console.log(contact);
+    // console.log(contact);
 
-    fetch('http://localhost:7001/contact', {
+    fetch('https://api.clubhows.com/contact', {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -107,7 +107,7 @@ export default class ContactForm extends Component {
       })
     })
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (result.status === 200) {
           this.setState({
             success: 'Yay! Note sent, we will be in touch shortly!',
@@ -143,7 +143,7 @@ export default class ContactForm extends Component {
       messageError,
       emailError
     } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <Box pad="medium" direction="column" className={contactForm}>
         <Form onSubmit={e => this.processEmail(e)}>

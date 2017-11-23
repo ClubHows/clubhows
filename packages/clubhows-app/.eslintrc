@@ -1,5 +1,8 @@
 {
   "parser": "babel-eslint",
+  "parserOptions": {
+        "sourceType": "module"
+  },
   "extends": [
     "airbnb/base",
     "plugin:import/errors",

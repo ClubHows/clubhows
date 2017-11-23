@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { Component } from 'react';
 import Link from 'gatsby-link';
 import { css } from 'emotion';
@@ -57,7 +56,7 @@ class Navigation extends Component {
   }
 
   onResponsive(small) {
-    console.log(small);
+    // console.log(small);
     this.setState({ mobile: small });
   }
 
@@ -77,7 +76,7 @@ class Navigation extends Component {
   };
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <Header fixed size="small">
         {!this.state.mobile && (

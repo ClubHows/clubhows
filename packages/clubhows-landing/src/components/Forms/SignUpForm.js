@@ -67,9 +67,9 @@ export default class SignUpForm extends Component {
   }
 
   SendEmail = signup => {
-    console.log(signup);
+    // console.log(signup);
 
-    fetch('http://localhost:7001/subscribe', {
+    fetch('https://api.clubhows.com/subscribe', {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',
@@ -80,7 +80,7 @@ export default class SignUpForm extends Component {
       })
     })
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (result.status === 200) {
           this.setState({
             success: 'Yay! We will be in touch soon!',
@@ -91,7 +91,7 @@ export default class SignUpForm extends Component {
         return result;
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         this.setState({
           submitError: `Subscribe error: ${err}`,
           emailError: '',
@@ -102,7 +102,7 @@ export default class SignUpForm extends Component {
 
   render() {
     const { submitError, success, emailError } = this.state;
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <Box pad="medium" direction="column" className={signupForm}>
         <Form onSubmit={e => this.processEmail(e)}>
