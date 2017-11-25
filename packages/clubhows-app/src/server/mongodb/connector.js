@@ -5,7 +5,12 @@ import log from '../../common/log';
 export default async function run() {
   mongoose.Promise = bluebird;
 
-  const dbURI = process.env.MONGO_DB;
+  let dbURI;
+  if (process.env.NODE === 'production') {
+    dbURI = process.env.MONGO_DB;
+  } else {
+    dbURI = process.env.MONGO_DB_LOCAL;
+  }
 
   mongoose.connect(dbURI, {
     useMongoClient: true

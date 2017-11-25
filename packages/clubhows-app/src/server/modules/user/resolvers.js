@@ -95,7 +95,7 @@ export default pubsub => ({
             isActive = true;
           }
 
-          [userId] = await context.User.register({ ...input, isActive });
+          [userId] = await context.User.addUser({ ...input, isActive });
 
           // if user has previously logged with facebook auth
         } else {
@@ -194,8 +194,8 @@ export default pubsub => ({
 
           e.throwIf();
 
-          const [createdUserId] = await context.User.register({ ...input });
-          await context.User.editUserProfile({ id: createdUserId, ...input });
+          const [createdUserId] = await context.User.addUser({ ...input });
+          await context.User.editUser({ id: createdUserId, ...input });
 
           if (settings.user.auth.certificate.enabled) {
             await context.User.editAuthCertificate({ id: createdUserId, ...input });

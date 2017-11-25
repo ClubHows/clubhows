@@ -3,6 +3,7 @@ import { pick } from 'lodash';
 import bcrypt from 'bcryptjs';
 import settings from '../../../../../settings';
 import FieldError from '../../../../common/FieldError';
+import log from '../../../../common/log';
 
 export const createTokens = async (user, secret, refreshSecret) => {
   let tokenUser = pick(user, ['id', 'username', 'role']);
@@ -33,6 +34,8 @@ export const createTokens = async (user, secret, refreshSecret) => {
 
 export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   let userId = -1;
+  log(User);
+
   try {
     const { user } = jwt.decode(refreshToken);
     userId = user;
@@ -95,6 +98,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
 };
 
 export const tryLoginSerial = async (serial, User, SECRET) => {
+  log(User);
   try {
     const certAuth = await User.getUserWithSerial(serial);
 

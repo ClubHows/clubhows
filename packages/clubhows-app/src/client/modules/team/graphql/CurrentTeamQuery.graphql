@@ -1,0 +1,7 @@
+#import "./Team.graphql"
+
+query currentTeam {
+  currentTeam {
+    ... TeamInfo
+  }
+}
