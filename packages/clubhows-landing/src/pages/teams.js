@@ -11,7 +11,7 @@ const pageTop = css`
   margin-top: 3.5rem;
 `;
 
-const HowItWorks = () => {
+const Teams = () => {
   const something = 0;
   return (
     <Split flex="right" mt={something} className={pageTop}>
@@ -25,4 +25,4 @@ const HowItWorks = () => {
   );
 };
 
-export default HowItWorks;
+export default Teams;

@@ -50,6 +50,11 @@ const Sidebar = () => (
         <Link to="/lists">Lists</Link>
       </ListItem>
     </List>
+    <List selectable>
+      <ListItem justify="between" separator="horizontal">
+        <Link to="/about">Overview</Link>
+      </ListItem>
+    </List>
   </Box>
 );
 
