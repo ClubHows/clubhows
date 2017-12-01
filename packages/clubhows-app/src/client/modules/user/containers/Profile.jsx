@@ -26,7 +26,8 @@ Profile.propTypes = {
 export default compose(
   graphql(CURRENT_USER_QUERY, {
     options: { fetchPolicy: 'network-only' },
-    props({ data: { loading, currentUser } }) {
+    props({ data: { loading, currentUser, error } }) {
+      if (error) throw new Error(error);
       return { loading, currentUser };
     }
   })

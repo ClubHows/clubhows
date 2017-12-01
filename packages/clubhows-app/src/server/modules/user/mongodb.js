@@ -14,6 +14,7 @@ mongodb();
 
 export default class UserDAO {
   getUser(id) {
+    log('mongodb 17:', id);
     return UserSchema.getById(id);
   }
 
@@ -26,15 +27,12 @@ export default class UserDAO {
   }
 
   async getUserWithPassword(id) {
+    log('mongodb 30:', id);
     return UserSchema.getById(id);
   }
 
   getUserWithSerial(serial) {
     return UserSchema.getBySerial(serial);
-  }
-
-  currentUser(id) {
-    return UserSchema.getById(id);
   }
 
   async getUsers(orderby, sortby) {

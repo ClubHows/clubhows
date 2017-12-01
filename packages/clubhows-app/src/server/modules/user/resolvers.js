@@ -21,11 +21,16 @@ export default pubsub => ({
         return context.User.getUser(_id);
       }
     ),
-    currentUser(obj, args, context) {
-      if (context.user) {
-        return context.User.getUser(context.user._id);
-      } else {
-        return null;
+    async currentUser(obj, args, context) {
+      log('resolvers 25:', context.user);
+      try {
+        if (context.user) {
+          const current = await context.User.getUser(context.user._id);
+          await log('resolvers 29:', current);
+          return current;
+        }
+      } catch (e) {
+        return e;
       }
     }
   },

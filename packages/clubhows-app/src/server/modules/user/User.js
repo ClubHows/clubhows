@@ -43,14 +43,15 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.statics = {
   async getById(id) {
-    return await this.findById(id._id)
+    log('User 46:', id);
+    return await this.findById(id)
       .exec()
       .then(user => {
-        log(user);
+        log('User 50:', user);
         return user;
       })
       .catch(err => {
-        log(err);
+        log('User 54:', err);
         return 'error occured';
       });
   },

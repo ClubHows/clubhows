@@ -1,5 +1,5 @@
 type User {
-  id: Int!
+  id: String!
   username: String!
   role: String!
   isActive: Boolean
@@ -11,11 +11,11 @@ type User {
 }
 
 type FacebookProfile {
-  fbId: String!
+  fbId: String
   displayName: String
   accessToken: String
   expiresAt: Date
-  email: String!
+  email: String
   firstName: String
   lastName: String
   link: String
@@ -71,7 +71,7 @@ extend type Mutation {
   # Edit a user
   editUser(input: EditUserInput!): UserPayload!
   # Delete a user
-  deleteUser(id: Int!): UserPayload!
+  deleteUser(id: String!): UserPayload!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ResetPayload!
 }
