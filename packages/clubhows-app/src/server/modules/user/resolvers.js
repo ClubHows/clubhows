@@ -355,16 +355,23 @@ export default pubsub => ({
         e.throwIf();
 
         const token = Buffer.from(reset.token, 'base64').toString();
-        const { email, password } = jwt.verify(token, context.SECRET);
-        const user = await context.User.getUserByEmail(email);
-        if (user.password !== password) {
-          e.setError('token', 'Invalid token');
-          e.throwIf();
-        }
+        jwt.verify(token, context.SECRET, async (err, decoded) => {
+          if (!err) {
+            log('user_resolver 359: ', err, decoded);
+            const { email, password } = decoded;
+            log('user_resolver 361: ', email, password);
+            const user = await context.User.getUserByEmail(email);
+            log('user_resolver 364: ', user._id, reset.password);
+            if (user.password !== password) {
+              e.setError('token', 'Invalid token');
+              e.throwIf();
+            }
 
-        if (user) {
-          await context.User.updatePassword(user._id, reset.password);
-        }
+            return await context.User.updatePassword(user._id, reset.password);
+          }
+          e.setError('token', err.message);
+          e.throw();
+        });
         return { errors: null };
       } catch (e) {
         return { errors: e };

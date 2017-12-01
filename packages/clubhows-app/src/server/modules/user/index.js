@@ -135,6 +135,7 @@ export default new Feature({
     };
   },
   middleware: app => {
+    log('138: ', User);
     app.use(tokenMiddleware(SECRET, User, jwt));
 
     if (settings.user.auth.password.sendConfirmationEmail) {

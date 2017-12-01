@@ -97,18 +97,27 @@ export default class UserDAO {
   }
 
   addFacebookOauth({ _id, facebook }) {
-    return UserSchema.update(_id, {
-      facebook: {
-        fb_id: facebook.id,
-        display_name: facebook.displayName,
-        email: facebook.email
+    return UserSchema.update(
+      { _id: _id },
+      {
+        facebook: {
+          fb_id: facebook.id,
+          display_name: facebook.displayName,
+          email: facebook.email
+        }
       }
-    });
+    );
   }
 
-  async updatePassword({ id, password }) {
+  async updatePassword(_id, password) {
+    log('113', _id, password);
     const passwordHashed = await bcrypt.hashSync(password, 12);
-    return UserSchema.save(id, { password: password });
+    return UserSchema.update({ _id: _id }, { password: password });
+  }
+
+  async updateActive(_id, isActive) {
+    log('115', _id, isActive);
+    return UserSchema.update({ _id: _id }, { is_active: isActive });
   }
 
   editUser({ id, username, email, name }) {

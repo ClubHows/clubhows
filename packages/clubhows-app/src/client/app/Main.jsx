@@ -113,7 +113,8 @@ let link = ApolloLink.split(
 
 const client = createApolloClient({
   link: ApolloLink.from((settings.app.logging.apolloLogging ? [new LoggingLink()] : []).concat([link])),
-  cache
+  cache,
+  connectToDevTools: true
 });
 
 if (window.__APOLLO_STATE__) {

@@ -83,7 +83,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
     e.throwIf();
   }
 
-  if (settings.user.auth.password.confirm && !user.isActive) {
+  if (settings.user.auth.password.confirm && !user.is_active) {
     e.setError('email', 'Please confirm your e-mail first.');
     e.throwIf();
   }

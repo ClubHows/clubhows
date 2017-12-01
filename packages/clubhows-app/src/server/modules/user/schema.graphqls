@@ -52,7 +52,7 @@ extend type Query {
   # Get all users ordered by: OrderByUserInput add filtered by: FilterUserInput
   users(orderBy: OrderByUserInput, filter: FilterUserInput): [User]
   # Get user by id
-  user(id: Int!): User
+  user(id: String!): User
   # Get current user
   currentUser: User
 }
