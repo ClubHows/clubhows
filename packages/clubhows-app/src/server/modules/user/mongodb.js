@@ -58,9 +58,7 @@ export default class UserDAO {
   }
 
   async addUser({ username, email, password, role, isActive }) {
-    log('61', username, email, password, role, isActive);
     const passwordHashed = await bcrypt.hashSync(password, 12);
-    log('63', passwordHashed);
     if (role === undefined) {
       role = 'user';
     }
@@ -110,13 +108,11 @@ export default class UserDAO {
   }
 
   async updatePassword(_id, password) {
-    log('113', _id, password);
     const passwordHashed = await bcrypt.hashSync(password, 12);
-    return UserSchema.update({ _id: _id }, { password: password });
+    return UserSchema.update({ _id: _id }, { password: passwordHashed });
   }
 
   async updateActive(_id, isActive) {
-    log('115', _id, isActive);
     return UserSchema.update({ _id: _id }, { is_active: isActive });
   }
 

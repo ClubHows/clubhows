@@ -13,6 +13,7 @@ import CURRENT_USER_QUERY from '../graphql/CurrentUserQuery.graphql';
 
 class Profile extends React.Component {
   render() {
+    console.log(this.props);
     return <ProfileView {...this.props} />;
   }
 }

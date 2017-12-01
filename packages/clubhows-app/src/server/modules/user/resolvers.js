@@ -86,7 +86,6 @@ export default pubsub => ({
   },
   Mutation: {
     async register(obj, { input }, context) {
-      log('78', input);
       try {
         const e = new FieldError();
 
@@ -116,15 +115,13 @@ export default pubsub => ({
           await context.User.updatePassword(emailExists._id, input.password);
           _id = emailExists.userId;
         }
-        log('119', userAdded);
 
         if (context.mailer && settings.user.auth.password.sendConfirmationEmail && !emailExists && context.req) {
           // async email
           await jwt.sign({ user: pick(userAdded, '_id') }, context.SECRET, { expiresIn: '1d' }, (err, emailToken) => {
-            log('125', emailToken, err);
             const encodedToken = Buffer.from(emailToken).toString('base64');
             const url = `${context.req.protocol}://${context.req.get('host')}/confirmation/${encodedToken}`;
-            log('128', encodedToken, url);
+
             context.mailer.sendMail({
               from: `${settings.app.name} <${process.env.EMAIL_USER}>`,
               to: userAdded.email,
@@ -357,11 +354,8 @@ export default pubsub => ({
         const token = Buffer.from(reset.token, 'base64').toString();
         jwt.verify(token, context.SECRET, async (err, decoded) => {
           if (!err) {
-            log('user_resolver 359: ', err, decoded);
             const { email, password } = decoded;
-            log('user_resolver 361: ', email, password);
             const user = await context.User.getUserByEmail(email);
-            log('user_resolver 364: ', user._id, reset.password);
             if (user.password !== password) {
               e.setError('token', 'Invalid token');
               e.throwIf();
