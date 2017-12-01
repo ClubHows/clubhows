@@ -6,7 +6,7 @@ import FieldError from '../../../../common/FieldError';
 import log from '../../../../common/log';
 
 export const createTokens = async (user, secret, refreshSecret) => {
-  let tokenUser = pick(user, ['id', 'username', 'role']);
+  let tokenUser = pick(user, ['_id', 'username', 'role']);
   tokenUser.fullName = user.firstName ? `${user.firstName} ${user.lastName}` : null;
 
   const createToken = jwt.sign(
@@ -21,7 +21,7 @@ export const createTokens = async (user, secret, refreshSecret) => {
 
   const createRefreshToken = jwt.sign(
     {
-      user: user.id
+      user: user._id
     },
     refreshSecret,
     {
@@ -60,11 +60,12 @@ export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   return {
     token: newToken,
     refreshToken: newRefreshToken,
-    user: pick(user, ['id', 'username', 'role'])
+    user: pick(user, ['_id', 'username', 'role'])
   };
 };
 
 export const tryLogin = async (email, password, User, SECRET) => {
+  log(email, password, User, SECRET);
   const e = new FieldError();
   const user = await User.getUserByEmail(email);
 
@@ -74,7 +75,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
     e.setError('email', 'Please enter a valid e-mail.');
     e.throwIf();
   }
-
+  log(user);
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     // bad password

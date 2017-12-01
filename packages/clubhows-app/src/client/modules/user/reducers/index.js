@@ -3,11 +3,18 @@ const defaultState = {
   searchText: '',
   role: '',
   isActive: null,
-  orderBy: {}
+  orderBy: {},
+  userNotification: ''
 };
 
 export default function(state = defaultState, action) {
   switch (action.type) {
+    case 'USER_REGISTER':
+      return {
+        ...state,
+        userNotification: action.value
+      };
+
     case 'USER_FILTER_SEARCH_TEXT':
       return {
         ...state,

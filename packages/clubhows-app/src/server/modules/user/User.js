@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   },
   username: { type: String, required: true, max: 50 },
   email: { type: String, required: true, max: 50 },
+  password: { type: String, required: true, max: 100 },
   role: {
     type: String,
     required: true,
@@ -18,17 +19,18 @@ const UserSchema = new mongoose.Schema({
     default: 'member'
   },
   name: {
-    first_name: String,
-    last_name: String
+    firstName: String,
+    lastName: String,
+    fullName: String
   },
   facebook: {
-    fb_id: String,
-    display_name: String,
+    fbId: String,
+    displayName: String,
     accessToken: String,
     expiresAt: Date,
     email: String,
-    first_name: String,
-    last_name: String,
+    firstName: String,
+    lastName: String,
     link: String,
     gender: String,
     locale: String

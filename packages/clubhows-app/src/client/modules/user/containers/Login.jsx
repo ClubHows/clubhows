@@ -2,6 +2,7 @@
 // React
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 // Apollo
 import { graphql, compose } from 'react-apollo';
@@ -13,6 +14,7 @@ import LOGIN from '../graphql/Login.graphql';
 
 class Login extends React.Component {
   render() {
+    console.log('Register Container:', this.state);
     return <LoginView {...this.props} />;
   }
 }
@@ -53,4 +55,6 @@ const LoginWithApollo = compose(
   })
 )(Login);
 
-export default LoginWithApollo;
+export default connect(state => ({
+  userNotification: state.user.userNotification
+}))(LoginWithApollo);

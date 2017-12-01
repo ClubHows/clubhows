@@ -6,6 +6,8 @@ import { refreshTokens, tryLogin } from './auth';
 import FieldError from '../../../common/FieldError';
 import settings from '../../../../settings';
 
+import log from '../../../common/log';
+
 export default pubsub => ({
   Query: {
     users: withAuth(['user:view:all'], (obj, { orderBy, filter }, context) => {
@@ -13,15 +15,15 @@ export default pubsub => ({
     }),
     user: withAuth(
       (obj, args, context) => {
-        return context.user.id !== args.id ? ['user:view'] : ['user:view:self'];
+        return context.user._id !== args._id ? ['user:view'] : ['user:view:self'];
       },
-      (obj, { id }, context) => {
-        return context.User.getUser(id);
+      (obj, { _id }, context) => {
+        return context.User.getUser(_id);
       }
     ),
     currentUser(obj, args, context) {
       if (context.user) {
-        return context.User.getUser(context.user.id);
+        return context.User.getUser(context.user._id);
       } else {
         return null;
       }
@@ -31,7 +33,7 @@ export default pubsub => ({
     profile(obj) {
       return obj;
     },
-    auth(obj) {
+    facebook(obj) {
       return obj;
     }
   },
@@ -50,29 +52,41 @@ export default pubsub => ({
       }
     }
   },
-  UserAuth: {
-    certificate(obj) {
-      return obj;
-    },
-    facebook(obj) {
-      return obj;
-    }
-  },
-  CertificateAuth: {
-    serial(obj) {
-      return obj.serial;
-    }
-  },
-  FacebookAuth: {
+  FacebookProfile: {
     fbId(obj) {
       return obj.fbId;
     },
     displayName(obj) {
       return obj.displayName;
+    },
+    accessToken(obj) {
+      return obj.accessToken;
+    },
+    expiresAt(obj) {
+      return obj.expiresAt;
+    },
+    email(obj) {
+      return obj.email;
+    },
+    firstName(obj) {
+      return obj.firstName;
+    },
+    lastName(obj) {
+      return obj.lastName;
+    },
+    link(obj) {
+      return obj.link;
+    },
+    gender(obj) {
+      return obj.gender;
+    },
+    locale(obj) {
+      return obj.locale;
     }
   },
   Mutation: {
     async register(obj, { input }, context) {
+      log('78', input);
       try {
         const e = new FieldError();
 
@@ -88,43 +102,44 @@ export default pubsub => ({
 
         e.throwIf();
 
-        let userId = 0;
+        let _id = 0;
+        let userAdded;
         if (!emailExists) {
           let isActive = false;
           if (!settings.user.auth.password.confirm) {
             isActive = true;
           }
 
-          [userId] = await context.User.addUser({ ...input, isActive });
-
+          userAdded = await context.User.addUser({ ...input, isActive });
           // if user has previously logged with facebook auth
         } else {
-          await context.User.updatePassword(emailExists.userId, input.password);
-          userId = emailExists.userId;
+          await context.User.updatePassword(emailExists._id, input.password);
+          _id = emailExists.userId;
         }
-
-        const user = await context.User.getUser(userId);
+        log('119', userAdded);
 
         if (context.mailer && settings.user.auth.password.sendConfirmationEmail && !emailExists && context.req) {
           // async email
-          jwt.sign({ user: pick(user, 'id') }, context.SECRET, { expiresIn: '1d' }, (err, emailToken) => {
+          await jwt.sign({ user: pick(userAdded, '_id') }, context.SECRET, { expiresIn: '1d' }, (err, emailToken) => {
+            log('125', emailToken, err);
             const encodedToken = Buffer.from(emailToken).toString('base64');
             const url = `${context.req.protocol}://${context.req.get('host')}/confirmation/${encodedToken}`;
+            log('128', encodedToken, url);
             context.mailer.sendMail({
               from: `${settings.app.name} <${process.env.EMAIL_USER}>`,
-              to: user.email,
+              to: userAdded.email,
               subject: 'Confirm Email',
-              html: `<p>Hi, ${user.username}!</p>
+              html: `<p>Hi, ${userAdded.username}!</p>
               <p>Welcome to ${settings.app.name}. Please click the following link to confirm your email:</p>
               <p><a href="${url}">${url}</a></p>
-              <p>Below are your login information</p>
-              <p>Your email is: ${user.email}</p>
+              <p>Below is your login information</p>
+              <p>Your email is: ${userAdded.email}</p>
               <p>Your password is: ${input.password}</p>`
             });
+            log('register email sent');
           });
         }
-
-        return { user };
+        return { userAdded };
       } catch (e) {
         return { errors: e };
       }
@@ -172,7 +187,7 @@ export default pubsub => ({
     },
     addUser: withAuth(
       (obj, args, context) => {
-        return context.user.id !== args.id ? ['user:create'] : ['user:create:self'];
+        return context.user._id !== args._id ? ['user:create'] : ['user:create:self'];
       },
       async (obj, { input }, context) => {
         try {
@@ -230,18 +245,18 @@ export default pubsub => ({
     ),
     editUser: withAuth(
       (obj, args, context) => {
-        return context.user.id !== args.id ? ['user:update'] : ['user:update:self'];
+        return context.user._id !== args._id ? ['user:update'] : ['user:update:self'];
       },
       async (obj, { input }, context) => {
         try {
           const e = new FieldError();
           const userExists = await context.User.getUserByUsername(input.username);
-          if (userExists && userExists.id !== input.id) {
+          if (userExists && userExists._id !== input.id) {
             e.setError('username', 'Username already exists.');
           }
 
           const emailExists = await context.User.getUserByEmail(input.email);
-          if (emailExists && emailExists.id !== input.id) {
+          if (emailExists && emailExists._id !== input.id) {
             e.setError('email', 'E-mail already exists.');
           }
 
@@ -268,12 +283,12 @@ export default pubsub => ({
     ),
     deleteUser: withAuth(
       (obj, args, context) => {
-        return context.user.id !== args.id ? ['user:delete'] : ['user:delete:self'];
+        return context.user._id !== args._id ? ['user:delete'] : ['user:delete:self'];
       },
-      async (obj, { id }, context) => {
+      async (obj, { _id }, context) => {
         try {
           const e = new FieldError();
-          const user = await context.User.getUser(id);
+          const user = await context.User.getUser(_id);
           if (!user) {
             e.setError('delete', 'User does not exist.');
             e.throwIf();
@@ -284,7 +299,7 @@ export default pubsub => ({
             e.throwIf();
           }
 
-          const isDeleted = await context.User.deleteUser(id);
+          const isDeleted = await context.User.deleteUser(_id);
           if (isDeleted) {
             return { user };
           } else {
@@ -348,7 +363,7 @@ export default pubsub => ({
         }
 
         if (user) {
-          await context.User.updatePassword(user.id, reset.password);
+          await context.User.updatePassword(user._id, reset.password);
         }
         return { errors: null };
       } catch (e) {

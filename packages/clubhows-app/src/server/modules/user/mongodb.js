@@ -25,9 +25,8 @@ export default class UserDAO {
     return UserSchema.getByEmail(email);
   }
 
-  async getUserWithPassword(password) {
-    const passwordHashed = await bcrypt.hash(password, 12);
-    return UserSchema.getByPassword(password);
+  async getUserWithPassword(id) {
+    return UserSchema.getById(id);
   }
 
   getUserWithSerial(serial) {
@@ -59,15 +58,15 @@ export default class UserDAO {
   }
 
   async addUser({ username, email, password, role, isActive }) {
-    log(username, email, password, role, isActive);
-    const passwordHashed = await bcrypt.hash(password, 12);
-
+    log('61', username, email, password, role, isActive);
+    const passwordHashed = await bcrypt.hashSync(password, 12);
+    log('63', passwordHashed);
     if (role === undefined) {
       role = 'user';
     }
 
     return UserSchema.create({
-      _id: uuidv5('clubhows-user', process.env.CLUBHOWS_APP_UUID),
+      _id: uuidv5(email, process.env.CLUBHOWS_APP_UUID),
       username: username,
       email: email,
       password: passwordHashed,
@@ -84,7 +83,7 @@ export default class UserDAO {
 
   createFacebookOauth({ username, email, userId, facebook, role, isActive }) {
     return UserSchema.create({
-      _id: uuidv5('clubhows-user', process.env.CLUBHOWS_APP_UUID),
+      _id: uuidv5(email, process.env.CLUBHOWS_APP_UUID),
       username: username,
       email: email,
       facebook: {
@@ -108,7 +107,7 @@ export default class UserDAO {
   }
 
   async updatePassword({ id, password }) {
-    const passwordHashed = await bcrypt.hash(password, 12);
+    const passwordHashed = await bcrypt.hashSync(password, 12);
     return UserSchema.save(id, { password: password });
   }
 

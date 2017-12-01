@@ -52,7 +52,7 @@ export default class Team {
     log(args);
     const slug = slugify(args.name, { lower: true });
     return TeamSchema.create({
-      _id: uuidv5('clubhows-team', process.env.CLUBHOWS_APP_UUID),
+      _id: uuidv5(slug, process.env.CLUBHOWS_APP_UUID),
       name: args.name,
       owner: args.owner,
       slug: slug

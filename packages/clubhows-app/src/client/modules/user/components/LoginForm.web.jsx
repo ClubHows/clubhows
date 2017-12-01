@@ -29,7 +29,7 @@ const LoginForm = ({ handleSubmit, submitting, onSubmit, error }) => {
       <FormItem label="Password">
         <Field name="password" component={RenderField} type="password" label="Password" validate={required} />
       </FormItem>
-      <Box>
+      <Box direction="column">
         <Row>
           <Col>
             <div className="text-center">{error && <Alert color="error">{error}</Alert>}</div>

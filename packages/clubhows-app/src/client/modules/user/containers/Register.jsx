@@ -1,6 +1,7 @@
 // React
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 // Apollo
 import { graphql, compose } from 'react-apollo';
@@ -28,7 +29,6 @@ const RegisterWithApollo = compose(
           const { data: { register } } = await mutate({
             variables: { input: { username, email, password } }
           });
-
           if (register.errors) {
             return { errors: register.errors };
           }
@@ -46,4 +46,16 @@ const RegisterWithApollo = compose(
   })
 )(Register);
 
-export default RegisterWithApollo;
+export default connect(
+  state => ({
+    userNotification: state.user.userNotification
+  }),
+  dispatch => ({
+    onRegister() {
+      dispatch({
+        type: 'USER_REGISTER',
+        value: 'Registration success! Please check your email and click the confirmation link.'
+      });
+    }
+  })
+)(RegisterWithApollo);

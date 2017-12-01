@@ -4,28 +4,29 @@ type User {
   role: String!
   isActive: Boolean
   email: String!
+  password: String
   profile: UserProfile
-  auth: UserAuth
+  facebook: FacebookProfile
+  auth_certificate: String
+}
+
+type FacebookProfile {
+  fbId: String!
+  displayName: String
+  accessToken: String
+  expiresAt: Date
+  email: String!
+  firstName: String
+  lastName: String
+  link: String
+  gender: String
+  locale: String
 }
 
 type UserProfile {
   firstName: String
   lastName: String
   fullName: String
-}
-
-type UserAuth {
-  certificate: CertificateAuth
-  facebook: FacebookAuth
-}
-
-type CertificateAuth {
-  serial: String
-}
-
-type FacebookAuth {
-  fbId: String
-  displayName: String
 }
 
 type UserPayload {
