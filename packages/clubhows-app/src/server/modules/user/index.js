@@ -30,37 +30,48 @@ if (settings.user.auth.facebook.enabled) {
       },
       async function(accessToken, refreshToken, profile, cb) {
         const { id, username, displayName, emails: [{ value }] } = profile;
-        log(profile);
+        log('user index 33: ', profile);
         try {
           let user = await User.getUserByFbIdOrEmail(id, value);
-
-          if (!user) {
+          await log('user index 36: ', user);
+          const { facebook: { fbId }, email } = user;
+          await log('user index 38: ', fbId, email);
+          if (fbId === undefined && email === undefined) {
             const isActive = true;
             const createdUserId = await User.createFacebookOauth({
               username: username ? username : displayName,
               email: value,
               password: id,
               facebook: {
-                fb_id: id,
-                display_name: displayName,
+                fbId: id,
+                displayName: displayName,
                 email: value
+              },
+              name: {
+                fullName: displayName
               },
               role: 'user',
               isActive
             });
-
+            log('user index 56: ', createdUserId);
             user = await User.getUser(createdUserId);
-          } else if (!user.facebok.fbId) {
+          } else {
+            let name = user.name.fullName;
+            if (name === null || name === undefined) name = displayName;
+
             await User.addFacebookOauth({
               _id: user._id,
               facebook: {
-                fb_id: id,
-                display_name: displayName,
+                fbId: id,
+                displayName: displayName,
                 email: value
+              },
+              name: {
+                fullName: name
               }
             });
           }
-
+          await log('user index 63: ', user);
           return cb(null, pick(user, ['_id', 'username', 'role', 'email']));
         } catch (err) {
           return cb(err, {});
@@ -92,7 +103,7 @@ export default new Feature({
         const { user } = jwt.verify(connectionParams.token, SECRET);
         tokenUser = user;
       } catch (err) {
-        log(User);
+        log('user index 95: ', User, connectionParams.token);
         const newTokens = await refreshTokens(connectionParams.token, connectionParams.refreshToken, User, SECRET);
         tokenUser = newTokens.user;
       }
@@ -135,7 +146,7 @@ export default new Feature({
     };
   },
   middleware: app => {
-    log('138: ', User);
+    log('User.index 149: ', User);
     app.use(tokenMiddleware(SECRET, User, jwt));
 
     if (settings.user.auth.password.sendConfirmationEmail) {
@@ -147,11 +158,9 @@ export default new Feature({
 
       app.get('/auth/facebook', passport.authenticate('facebook'));
 
-      app.get('/auth/facebook/callback', passport.authenticate('facebook', { session: false }), async function(
-        req,
-        res
-      ) {
-        const user = await User.getUser(req.user.id);
+      app.get('/auth/facebook/callback', passport.authenticate('facebook', { session: false }), async (req, res) => {
+        log('User.index 165: ', req.user);
+        const user = await User.getUser(req.user._id);
         const refreshSecret = SECRET + user.password;
         const [token, refreshToken] = await createTokens(req.user, SECRET, refreshSecret);
 
@@ -172,7 +181,7 @@ export default new Feature({
           maxAge: 60 * 60 * 24 * 7,
           httpOnly: false
         });
-
+        log('User.index 184: ', res);
         res.redirect('/profile');
       });
     }

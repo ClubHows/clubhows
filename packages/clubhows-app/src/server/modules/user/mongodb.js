@@ -72,34 +72,42 @@ export default class UserDAO {
   }
 
   async getUserByFbIdOrEmail(id, email) {
-    return await UserSchema.findOne()
-      .where('facebook.id' === id)
-      .orWhere('email' === email);
+    const userCheck = await UserSchema.findOne({ $or: [{ email: email }, { 'facebook.fbId': id }] });
+    log('mongodb 75:', userCheck);
+    return userCheck;
   }
 
-  createFacebookOauth({ username, email, userId, facebook, role, isActive }) {
-    return UserSchema.create({
+  async createFacebookOauth({ username, email, userId, facebook, name, role, isActive }) {
+    log('mongodb 81:', username, email, userId, facebook, name, role, isActive);
+    return await UserSchema.create({
       _id: uuidv5(email, process.env.CLUBHOWS_APP_UUID),
       username: username,
       email: email,
       facebook: {
-        fb_id: facebook.id,
-        display_name: facebook.displayName,
+        fbId: facebook.fbId,
+        displayName: facebook.displayName,
         email: facebook.email
+      },
+      name: {
+        fullName: name.fullName
       },
       role: role,
       isActive: !!isActive
     });
   }
 
-  addFacebookOauth({ _id, facebook }) {
+  addFacebookOauth({ _id, facebook, name }) {
+    log('mongodb 100:', _id, facebook, name);
     return UserSchema.update(
       { _id: _id },
       {
         facebook: {
-          fb_id: facebook.id,
-          display_name: facebook.displayName,
+          fbId: facebook.fbId,
+          displayName: facebook.displayName,
           email: facebook.email
+        },
+        name: {
+          fullName: name.fullName
         }
       }
     );

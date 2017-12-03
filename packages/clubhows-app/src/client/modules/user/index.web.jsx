@@ -10,7 +10,7 @@ import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import reducers from './reducers';
 
-import { AuthRoute, AuthNav, AuthLogin, AuthProfile } from './containers/Auth';
+import { AuthRoute, AuthNav, AuthLogout, AuthLoggedIn, AuthLoggedInRoute } from './containers/Auth';
 
 import Feature from '../connector';
 
@@ -44,8 +44,8 @@ export default new Feature({
     <AuthRoute exact path="/profile" scope="user" component={Profile} />,
     <AuthRoute exact path="/users" scope="admin" component={Users} />,
     <Route exact path="/users/:id" component={UserEdit} />,
-    <Route exact path="/register" component={Register} />,
-    <Route exact path="/login" component={Login} />,
+    <AuthLoggedInRoute exact path="/register" redirect="/profile" component={Register} />,
+    <AuthLoggedInRoute exact path="/login" redirect="/profile" component={Login} />,
     <Route exact path="/forgot-password" component={ForgotPassword} />,
     <Route exact path="/reset-password/:token" component={ResetPassword} />
   ],
@@ -61,17 +61,15 @@ export default new Feature({
   navItemRight: [
     <AuthNav scope="user" key="/profile">
       <ListItem key="/profile">
-        <AuthProfile />
+        <AuthLoggedIn to="/profile" className="nav-link" activeClassName="active" />
       </ListItem>
     </AuthNav>,
     <ListItem key="login">
-      <AuthLogin>
-        <span className="nav-link">
-          <NavLink to="/login" activeClassName="active">
-            Log In
-          </NavLink>
-        </span>
-      </AuthLogin>
+      <AuthLogout>
+        <NavLink to="/login" className="nav-link" activeClassName="active">
+          Log In
+        </NavLink>
+      </AuthLogout>
     </ListItem>
   ],
   reducer: { user: reducers },
