@@ -1,1 +1,1 @@
-export * from '../../../ui-grommet/components';
+export * from './ui-antd';

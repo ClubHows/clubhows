@@ -1,6 +1,7 @@
 import team from './team';
 import counter from './counter';
 import post from './post';
+import todo from './todo';
 import upload from './upload';
 import user from './user';
 import mailer from './mailer';
@@ -10,4 +11,4 @@ import './debug';
 
 import Feature from './connector';
 
-export default new Feature(team, counter, post, upload, user, mailer, graphqlTypes, apolloEngine);
+export default new Feature(team, counter, post, todo, upload, user, mailer, graphqlTypes, apolloEngine);

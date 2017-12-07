@@ -79,13 +79,31 @@ AuthNav.propTypes = {
   cookies: PropTypes.instanceOf(Cookies)
 };
 
-const AuthLoggedIn = withCookies(({ cookies, ...rest }) => {
-  return checkAuth(cookies) ? <NavLink {...rest}>{profileName(cookies)}</NavLink> : null;
+const AuthProfile = withCookies(({ cookies }) => {
+  return checkAuth(cookies) ? (
+    <NavLink to="/profile" className="nav-link" activeClassName="active">
+      {profileName(cookies)}
+    </NavLink>
+  ) : null;
+});
+
+AuthProfile.propTypes = {
+  cookies: PropTypes.instanceOf(Cookies)
+};
+
+const AuthLoggedIn = withCookies(({ cookies, label, to, ...rest }) => {
+  return checkAuth(cookies) ? (
+    <NavLink to={to} {...rest}>
+      {label}
+    </NavLink>
+  ) : null;
 });
 
 AuthLoggedIn.propTypes = {
   component: PropTypes.func,
-  cookies: PropTypes.instanceOf(Cookies)
+  cookies: PropTypes.instanceOf(Cookies),
+  label: PropTypes.string,
+  to: PropTypes.string
 };
 
 const AuthLogout = ({ children, cookies, logout }) => {
@@ -181,6 +199,7 @@ AuthLoggedInRoute.propTypes = {
 
 export { AuthNav };
 export { AuthLoggedIn };
+export { AuthProfile };
 export { AuthLogoutWithApollo as AuthLogout };
 export { AuthRoute };
 export { AuthLoggedInRoute };

@@ -10,7 +10,7 @@ import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import reducers from './reducers';
 
-import { AuthRoute, AuthNav, AuthLogout, AuthLoggedIn, AuthLoggedInRoute } from './containers/Auth';
+import { AuthRoute, AuthNav, AuthLogout, AuthProfile, AuthLoggedInRoute } from './containers/Auth';
 
 import Feature from '../connector';
 
@@ -61,7 +61,7 @@ export default new Feature({
   navItemRight: [
     <AuthNav scope="user" key="/profile">
       <ListItem key="/profile">
-        <AuthLoggedIn to="/profile" className="nav-link" activeClassName="active" />
+        <AuthProfile />
       </ListItem>
     </AuthNav>,
     <ListItem key="login">

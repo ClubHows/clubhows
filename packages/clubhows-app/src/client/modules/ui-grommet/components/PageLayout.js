@@ -4,9 +4,9 @@ import { Grommet, Grid, Box, Button, Responsive, Layer } from 'grommet';
 import { Close, Menu } from 'grommet-icons';
 import { NavLink } from 'react-router-dom';
 // import { App, Header, Footer, Split, Box, Menu, Anchor } from 'grommet';
-import { hpe } from 'grommet/themes';
+// import { hpe } from 'grommet/themes';
 import log from '../../../../common/log';
-
+import '../style.less';
 import { MainMenu } from './MainMenu';
 
 export class PageLayout extends Component {
@@ -118,7 +118,7 @@ export class PageLayout extends Component {
     }
 
     return (
-      <Grommet theme={hpe}>
+      <Grommet>
         <Responsive onChange={this.onResponsiveChange}>
           <Grid rows={rows} columns={grid} areas={areas} gap="none">
             {menu}

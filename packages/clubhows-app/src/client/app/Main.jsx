@@ -17,6 +17,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import ReactGA from 'react-ga';
 import { CookiesProvider } from 'react-cookie';
 import url from 'url';
+// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies, import/extensions
 
 // import { ThemeProvider } from 'styled-components';
 //  import theme from 'styled-theming';

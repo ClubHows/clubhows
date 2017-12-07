@@ -21,25 +21,6 @@ const envar = {
 };
 // App-specific back-end Webpack config should be here
 const server = {
-  resolve: {
-    extensions: ['.js', '.scss', '.css', '.json']
-  },
-  plugins: [new InterpolateHtmlPlugin(env.raw)],
-  module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: 'sass-loader',
-            options: {
-              includePaths: ['./node_modules']
-            }
-          }
-        ]
-      }
-    ]
-  },
   node: {
     dgram: 'empty',
     fs: 'empty',
@@ -51,34 +32,12 @@ const server = {
 
 // App-specific web front-end Webpack config should be here
 const web = {
-  resolve: {
-    extensions: ['.js', '.scss', '.css', '.json']
-  },
   node: {
     dgram: 'empty',
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: 'sass-loader',
-            options: {
-              includePaths: ['./node_modules', './node_modules/grommet/node_modules']
-            }
-          }
-        ]
-      },
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader'
-      }
-    ]
   }
 };
 

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import modules from '../../client/modules';
+import { styles } from '../../client/modules/common/components/web';
 
 const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) => {
   const htmlAttrs = helmet.htmlAttributes.toComponent(); // react-helmet html document tags
@@ -25,15 +26,21 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
         <link rel="shortcut icon" href={`/${assetMap['favicon.ico']}`} />
         <meta name="msapplication-config" content={`/${assetMap['browserconfig.xml']}`} />
         <meta name="theme-color" content="#ffffff" />
+        <link rel="stylesheet" href="node_modules/@atlaskit/css-reset/dist/bundle.css" />
         {!__DEV__ && <link rel="stylesheet" type="text/css" href={`/${assetMap['index.css']}`} />}
         {!!__DEV__ && (
           <style
             dangerouslySetInnerHTML={{
-              __html: modules.stylesInserts.map(style => style._getCss()).join('')
+              __html: styles._getCss() + modules.stylesInserts.map(style => style._getCss()).join('')
             }}
           />
         )}
         {!!css && css}
+        {modules.scriptsInserts.map((script, i) => {
+          if (script) {
+            return <script key={i} src={script} />;
+          }
+        })}
       </head>
       <body {...bodyAttrs}>
         <div id="content" dangerouslySetInnerHTML={{ __html: content || '' }} />
