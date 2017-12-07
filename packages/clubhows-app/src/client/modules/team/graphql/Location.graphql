@@ -1,0 +1,4 @@
+fragment LocationInfo on Location {
+  id
+  name
+}

@@ -1,0 +1,4 @@
+fragment MemberInfo on Member {
+  user
+  role
+}

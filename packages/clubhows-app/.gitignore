@@ -10,4 +10,4 @@ npm-debug.*
 .DS_Store
 jsconfig.json
 /public
-# .env
+.env

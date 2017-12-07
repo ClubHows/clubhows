@@ -1,0 +1,14 @@
+#import "./Location.graphql"
+#import "./Member.graphql"
+
+mutation addTeam($input: AddTeamInput!) {
+  addTeam(input: $input) {
+    ...TeamInfo
+    members {
+      ...MemberInfo
+    }
+    locations {
+      ...LocationInfo
+    }
+  }
+}

@@ -1,3 +1,18 @@
+### AUSK ###
+.idea
+/packages/clubhows-app/.vscode
+/packages/clubhows-app/.tmp
+/packages/clubhows-app/.vscode
+/packages/clubhows-app/node_modules
+/packages/clubhows-app/build
+npm-debug.*
+.expo/
+*.sqlite3
+.DS_Store
+jsconfig.json
+/public
+
+### Custom ###
 .next
 node_modules/
 package-lock.json
