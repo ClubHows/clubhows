@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import serialize from 'serialize-javascript';
 import modules from '../../client/modules';
+import { styles } from '../../client/modules/common/components/web';
 
 const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) => {
   const htmlAttrs = helmet.htmlAttributes.toComponent(); // react-helmet html document tags
@@ -15,8 +16,6 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
         {helmet.link.toComponent()}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="apple-mobile-web-app-title" content="ClubHows" />
-        <meta name="application-name" content="ClubHows" />
         <link rel="apple-touch-icon" sizes="180x180" href={`/${assetMap['apple-touch-icon.png']}`} />
         <link rel="icon" type="image/png" href={`/${assetMap['favicon-32x32.png']}`} sizes="32x32" />
         <link rel="icon" type="image/png" href={`/${assetMap['favicon-16x16.png']}`} sizes="16x16" />
@@ -29,7 +28,7 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
         {!!__DEV__ && (
           <style
             dangerouslySetInnerHTML={{
-              __html: modules.stylesInserts.map(style => style._getCss()).join('')
+              __html: styles._getCss() + modules.stylesInserts.map(style => style._getCss()).join('')
             }}
           />
         )}
@@ -41,9 +40,7 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
           dangerouslySetInnerHTML={{
             __html: `window.__APOLLO_STATE__=${serialize(state, {
               isJSON: true
-            })};window.localStorage.setItem('token','${token}');window.localStorage.setItem('refreshToken','${
-              refreshToken
-            }');`
+            })};window.localStorage.setItem('token','${token}');window.localStorage.setItem('refreshToken','${refreshToken}');`
           }}
           charSet="UTF-8"
         />

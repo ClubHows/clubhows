@@ -14,13 +14,12 @@ import fs from 'fs';
 import path from 'path';
 import Helmet from 'react-helmet';
 import url from 'url';
-import { CookiesProvider } from 'react-cookie';
+import { AppRegistry } from 'react-native';
 
 import createApolloClient from '../../common/createApolloClient';
 import createReduxStore from '../../common/createReduxStore';
 import Html from './html';
 import Routes from '../../client/app/Routes';
-import log from '../../common/log';
 import modules from '../modules';
 import { options as spinConfig } from '../../../.spinrc.json';
 import settings from '../../../settings';
@@ -30,7 +29,7 @@ let assetMap;
 const { protocol, hostname, port, pathname } = url.parse(__BACKEND_URL__);
 const apiUrl = `${protocol}//${hostname}:${process.env.PORT || port}${pathname}`;
 
-async function renderServerSide(req, res) {
+const renderServerSide = async (req, res) => {
   // if (__PERSIST_GQL__) {
   //   networkInterface = addPersistedQueries(networkInterface, queryMap);
   // }
@@ -38,12 +37,8 @@ async function renderServerSide(req, res) {
 
   const fetch = createApolloFetch({ uri: apiUrl, constructOptions: modules.constructFetchOptions });
   fetch.batchUse(({ options }, next) => {
-    try {
-      options.credentials = 'include';
-      options.headers = req.headers;
-    } catch (e) {
-      console.error(e);
-    }
+    options.credentials = 'include';
+    options.headers = req.headers;
 
     next();
   });
@@ -60,19 +55,23 @@ async function renderServerSide(req, res) {
   const store = createReduxStore(initialState, client);
 
   const context = {};
-  const component = (
-    <CookiesProvider cookies={req.universalCookies}>
+  const clientModules = require('../../client/modules').default;
+  const App = () =>
+    clientModules.getWrappedRoot(
       <Provider store={store}>
         <ApolloProvider client={client}>
           <StaticRouter location={req.url} context={context}>
             {Routes}
           </StaticRouter>
         </ApolloProvider>
-      </Provider>
-    </CookiesProvider>
-  );
+      </Provider>,
+      req
+    );
 
-  await getDataFromTree(component);
+  AppRegistry.registerComponent('App', () => App);
+  const { element, stylesheets } = AppRegistry.getApplication('App', {});
+
+  await getDataFromTree(element);
 
   if (context.pageNotFound === true) {
     res.status(404);
@@ -81,8 +80,11 @@ async function renderServerSide(req, res) {
   }
 
   const sheet = new ServerStyleSheet();
-  const html = ReactDOMServer.renderToString(sheet.collectStyles(component));
-  const css = sheet.getStyleElement();
+  const html = ReactDOMServer.renderToString(sheet.collectStyles(element));
+  const css = sheet
+    .getStyleElement()
+    .concat(stylesheets)
+    .map((el, idx) => React.cloneElement(el, { key: idx }));
   const helmet = Helmet.renderStatic(); // Avoid memory leak while tracking mounted instances
 
   if (context.url) {
@@ -114,16 +116,16 @@ async function renderServerSide(req, res) {
     res.send(`<!doctype html>\n${ReactDOMServer.renderToStaticMarkup(page)}`);
     res.end();
   }
-}
+};
 
 export default queryMap => async (req, res, next) => {
   try {
     if (req.url.indexOf('.') < 0 && __SSR__) {
-      return renderServerSide(req, res, queryMap);
+      return await renderServerSide(req, res, queryMap);
     } else {
-      return next();
+      next();
     }
   } catch (e) {
-    log.error('RENDERING ERROR:', e);
+    next(e);
   }
 };

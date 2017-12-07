@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Button } from '../../common/components/web';
-import PostCommentForm from './PostCommentForm';
 
 class PostCommentsView extends React.PureComponent {
   hendleEditComment = (id, content) => {
@@ -33,7 +32,7 @@ class PostCommentsView extends React.PureComponent {
   };
 
   render() {
-    const { postId, comment, comments } = this.props;
+    const { comments } = this.props;
 
     const columns = [
       {
@@ -71,7 +70,6 @@ class PostCommentsView extends React.PureComponent {
     return (
       <div>
         <h3>Comments</h3>
-        <PostCommentForm postId={postId} onSubmit={this.onSubmit()} initialValues={comment} />
         <h1 />
         <Table dataSource={comments} columns={columns} />
       </div>

@@ -13,14 +13,13 @@ import modules from './modules';
 import websiteMiddleware from './middleware/website';
 import graphiqlMiddleware from './middleware/graphiql';
 import graphqlMiddleware from './middleware/graphql';
+import errorMiddleware from './middleware/error';
 import addGraphQLSubscriptions from './api/subscriptions';
 import { options as spinConfig } from '../../.spinrc.json';
 import log from '../common/log';
 
 // eslint-disable-next-line import/no-mutable-exports
 let server;
-
-// log(process.env);
 
 const app = express();
 
@@ -31,17 +30,15 @@ for (const applyBeforeware of modules.beforewares) {
 app.use(cookiesMiddleware());
 
 const { port, pathname } = url.parse(__BACKEND_URL__);
-const serverPort = process.env.PORT || port;
+const serverPort = process.env.PORT || port || 8080;
 
 // Don't rate limit heroku
 app.enable('trust proxy');
 
-if (__DEV__) {
-  const corsOptions = {
-    credentials: true
-  };
-  app.use(cors(corsOptions));
-}
+const corsOptions = {
+  credentials: true
+};
+app.use(cors(corsOptions));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -83,9 +80,17 @@ for (const applyMiddleware of modules.middlewares) {
   applyMiddleware(app);
 }
 
+if (__DEV__) {
+  app.use('/servdir', (req, res) => {
+    res.send(process.cwd() + path.sep);
+  });
+}
 app.use(pathname, (...args) => graphqlMiddleware(...args));
 app.use('/graphiql', (...args) => graphiqlMiddleware(...args));
 app.use((...args) => websiteMiddleware(queryMap)(...args));
+if (__DEV__) {
+  app.use(errorMiddleware);
+}
 
 server = http.createServer(app);
 

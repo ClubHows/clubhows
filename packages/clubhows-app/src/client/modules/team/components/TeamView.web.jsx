@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { Box } from 'grommet';
 import { PageLayout, Row, Col } from '../../common/components/web';
 
 const renderMetaData = () => (
@@ -28,14 +27,12 @@ const TeamView = ({ loading, currentUser }) => {
     return (
       <PageLayout>
         {renderMetaData()}
-        <Box>
-          <Row>
-            <Col xs={{ size: 6, offset: 3 }}>
-              <h1 className="text-center">Your Team</h1>
-              <p>User ID: {currentUser.id}</p>
-            </Col>
-          </Row>
-        </Box>
+        <Row>
+          <Col xs={{ size: 6, offset: 3 }}>
+            <h1 className="text-center">Your Team</h1>
+            <p>User ID: {currentUser.id}</p>
+          </Col>
+        </Row>
       </PageLayout>
     );
   } else {

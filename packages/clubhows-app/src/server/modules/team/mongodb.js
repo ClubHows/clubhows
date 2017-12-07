@@ -1,10 +1,10 @@
 /*eslint-disable no-unused-vars*/
 import slugify from 'slugify';
-import uuidv4 from 'uuid/v4';
+import uuidv5 from 'uuid/v5';
 import mongoose from 'mongoose';
 import NodeGeocoder from 'node-geocoder';
 
-import mongodb from '../../../server/mongodb/connector';
+import mongodb from '../../../server/mongodb';
 
 import TeamSchema from './Team';
 import log from '../../../common/log';
@@ -51,7 +51,12 @@ export default class Team {
   addTeam(args) {
     log(args);
     const slug = slugify(args.name, { lower: true });
-    return TeamSchema.create({ _id: uuidv4(), name: args.name, owner: args.owner, slug: slug });
+    return TeamSchema.create({
+      _id: uuidv5(slug, process.env.CLUBHOWS_APP_UUID),
+      name: args.name,
+      owner: args.owner,
+      slug: slug
+    });
   }
 
   async addLocation(args) {

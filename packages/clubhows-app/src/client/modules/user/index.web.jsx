@@ -1,6 +1,7 @@
 import React from 'react';
+import { CookiesProvider } from 'react-cookie';
 import { Route, NavLink } from 'react-router-dom';
-import { ListItem } from '../common/components/web';
+import { MenuItem } from '../../modules/common/components/web';
 import Profile from './containers/Profile';
 import Users from './components/Users';
 import UserEdit from './containers/UserEdit';
@@ -10,7 +11,7 @@ import ForgotPassword from './containers/ForgotPassword';
 import ResetPassword from './containers/ResetPassword';
 import reducers from './reducers';
 
-import { AuthRoute, AuthNav, AuthLogin, AuthProfile } from './containers/Auth';
+import { AuthRoute, AuthLoggedInRoute, AuthNav, AuthLogin, AuthProfile } from './containers/Auth';
 
 import Feature from '../connector';
 
@@ -44,38 +45,36 @@ export default new Feature({
     <AuthRoute exact path="/profile" scope="user" component={Profile} />,
     <AuthRoute exact path="/users" scope="admin" component={Users} />,
     <Route exact path="/users/:id" component={UserEdit} />,
-    <Route exact path="/register" component={Register} />,
-    <Route exact path="/login" component={Login} />,
-    <Route exact path="/forgot-password" component={ForgotPassword} />,
-    <Route exact path="/reset-password/:token" component={ResetPassword} />
+    <AuthLoggedInRoute exact path="/register" redirect="/profile" component={Register} />,
+    <AuthLoggedInRoute exact path="/login" redirect="/profile" component={Login} />,
+    <AuthLoggedInRoute exact path="/forgot-password" redirect="/profile" component={ForgotPassword} />,
+    <AuthLoggedInRoute exact path="/reset-password/:token" redirect="/profile" component={ResetPassword} />
   ],
   navItem: [
-    <AuthNav scope="admin" key="/users">
-      <ListItem key="/users">
+    <MenuItem key="/users">
+      <AuthNav scope="admin">
         <NavLink to="/users" className="nav-link" activeClassName="active">
           Users
         </NavLink>
-      </ListItem>
-    </AuthNav>
+      </AuthNav>
+    </MenuItem>
   ],
   navItemRight: [
-    <AuthNav scope="user" key="/profile">
-      <ListItem key="/profile">
-        <AuthProfile />
-      </ListItem>
-    </AuthNav>,
-    <ListItem key="login">
+    <MenuItem key="/profile">
+      <AuthProfile />
+    </MenuItem>,
+    <MenuItem key="/login">
       <AuthLogin>
-        <span className="nav-link">
-          <NavLink to="/login" activeClassName="active">
-            Log In
-          </NavLink>
-        </span>
+        <NavLink to="/login" className="nav-link" activeClassName="active">
+          Sign In
+        </NavLink>
       </AuthLogin>
-    </ListItem>
+    </MenuItem>
   ],
   reducer: { user: reducers },
   middleware: tokenMiddleware,
   afterware: tokenAfterware,
-  connectionParam: connectionParam
+  connectionParam: connectionParam,
+  // eslint-disable-next-line react/display-name
+  rootComponentFactory: req => <CookiesProvider cookies={req ? req.universalCookies : undefined} />
 });

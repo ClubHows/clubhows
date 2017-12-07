@@ -68,7 +68,7 @@ class PostComments extends React.Component {
     this.subscription = subscribeToMore({
       document: COMMENT_SUBSCRIPTION,
       variables: { postId },
-      updateQuery: (prev, { subscriptionData: { commentUpdated: { mutation, id, node } } }) => {
+      updateQuery: (prev, { subscriptionData: { data: { commentUpdated: { mutation, id, node } } } }) => {
         let newResult = prev;
 
         if (mutation === 'CREATED') {
@@ -100,11 +100,7 @@ PostComments.propTypes = {
   postId: PropTypes.number.isRequired,
   comments: PropTypes.array.isRequired,
   comment: PropTypes.object.isRequired,
-  addComment: PropTypes.func.isRequired,
-  editComment: PropTypes.func.isRequired,
-  deleteComment: PropTypes.func.isRequired,
   onCommentSelect: PropTypes.func.isRequired,
-  onFormSubmitted: PropTypes.func.isRequired,
   subscribeToMore: PropTypes.func.isRequired
 };
 

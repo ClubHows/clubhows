@@ -1,6 +1,5 @@
 // React
 import React from 'react';
-import PropTypes from 'prop-types';
 
 // Apollo
 import { graphql, compose } from 'react-apollo';
@@ -10,15 +9,13 @@ import RegisterView from '../components/RegisterView';
 
 import REGISTER from '../graphql/Register.graphql';
 
+import settings from '../../../../../settings';
+
 class Register extends React.Component {
   render() {
     return <RegisterView {...this.props} />;
   }
 }
-
-Register.propTypes = {
-  register: PropTypes.func.isRequired
-};
 
 const RegisterWithApollo = compose(
   graphql(REGISTER, {
@@ -33,6 +30,9 @@ const RegisterWithApollo = compose(
             return { errors: register.errors };
           }
           if (history) {
+            if (settings.subscription.enabled) {
+              return history.push('/subscription');
+            }
             return history.push('/profile');
           }
           if (navigation) {

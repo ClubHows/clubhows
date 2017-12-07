@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { DebounceInput } from 'react-debounce-input';
-import { Form, FormItem, Select, Option, Label, Input, RenderCheckBox } from '../../common/components/web';
+import { Form, FormItem, Select, Option, Label, Input } from '../../common/components/web';
 
 class UsersFilterView extends React.PureComponent {
   handleSearch = e => {
@@ -49,7 +49,7 @@ class UsersFilterView extends React.PureComponent {
         &nbsp;
         <FormItem>
           <Label>
-            <RenderCheckBox checked={isActive} onChange={this.handleIsActive} /> Is Active
+            <Input type="checkbox" defaultChecked={isActive} onChange={this.handleIsActive} /> Is Active
           </Label>
         </FormItem>
       </Form>

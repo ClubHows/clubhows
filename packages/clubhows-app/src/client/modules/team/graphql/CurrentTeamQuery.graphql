@@ -1,0 +1,11 @@
+#import "./Team.graphql";
+#import "./Member.graphql";
+
+query currentTeam($id: Int!) {
+  currentTeam(id: $id) {
+    ...TeamInfo
+    members {
+      ...MemberInfo
+    }
+  }
+}

@@ -5,7 +5,7 @@ import { graphql, compose } from 'react-apollo';
 
 import TeamView from '../components/TeamView';
 
-import CURRENT_USER_QUERY from '../../user/graphql/CurrentUserQuery.graphql';
+import CURRENT_TEAM from '../graphql/TeamQuery.graphql';
 
 class Team extends React.Component {
   render() {
@@ -16,16 +16,16 @@ class Team extends React.Component {
 
 Team.propTypes = {
   loading: PropTypes.bool.isRequired,
-  currentUser: PropTypes.object
+  currentTeam: PropTypes.object
 };
 
 const TeamWithApollo = compose()(Team);
 
 export default compose(
-  graphql(CURRENT_USER_QUERY, {
+  graphql(CURRENT_TEAM, {
     options: { fetchPolicy: 'network-only' },
-    props({ data: { loading, currentUser } }) {
-      return { loading, currentUser };
+    props({ data: { loading, currentTeam } }) {
+      return { loading, currentTeam };
     }
   })
 )(Team);

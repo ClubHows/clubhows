@@ -1,17 +1,22 @@
 /* eslint-disable no-undef, react/prop-types */
 import React from 'react';
-import { Box } from '../components/Layout';
-import colors from '../utils/colors';
+import Split from 'grommet/components/Split';
+import Box from 'grommet/components/Box';
+import Heading from 'grommet/components/Heading';
+import { css } from 'emotion';
+
+import Sidebar from '../components/Sidebar';
+
+const pageTop = css`
+  margin-top: 0rem;
+`;
 
 const Privacy = () => (
-  <Box bg={colors.primary}>
-    <Box
-      width={[1, 1, 1 / 2]}
-      m={['3.5rem 0 0 0', '3.5rem 0 0 0', '3.5rem auto 0 auto']}
-      px={[3, 3, 0]}
-      color={colors.secondary}
-    >
-      <h1>Privacy Policy</h1>
+  <Split flex="right" mt={something} className={pageTop}>
+    <Sidebar colorIndex="neutral-4-a" />
+    <Box margin={{ horizontal: 'none', vertical: 'medium' }} pad="large">
+      <Heading tag="h1">Privacy Policy</Heading>
+      <Heading tag="h3">Overview</Heading>
       <p>
         Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
         eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
@@ -24,7 +29,7 @@ const Privacy = () => (
         ipsum dolor sit amet.
       </p>
     </Box>
-  </Box>
+  </Split>
 );
 
 export default Privacy;

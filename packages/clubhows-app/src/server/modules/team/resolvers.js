@@ -13,6 +13,13 @@ export default pubsub => ({
     teamByMember(obj, args, context) {
       return context.Team.teamByMember(args);
     },
+    currentTeam(obj, args, context) {
+      if (context.user) {
+        return context.Team.teamByMember(context.user._id);
+      } else {
+        return null;
+      }
+    },
     teamByLocation(obj, args, context) {
       return context.Team.teamByLocation(args.locId);
     },

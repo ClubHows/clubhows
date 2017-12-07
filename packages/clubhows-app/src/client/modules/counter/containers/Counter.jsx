@@ -37,7 +37,7 @@ class Counter extends React.Component {
     this.subscription = subscribeToMore({
       document: COUNTER_SUBSCRIPTION,
       variables: {},
-      updateQuery: (prev, { subscriptionData: { counterUpdated: { amount } } }) => {
+      updateQuery: (prev, { subscriptionData: { data: { counterUpdated: { amount } } } }) => {
         return update(prev, {
           counter: {
             amount: {
@@ -56,17 +56,13 @@ class Counter extends React.Component {
 
 Counter.propTypes = {
   loading: PropTypes.bool.isRequired,
-  counter: PropTypes.object,
-  updateCountQuery: PropTypes.func,
-  onReduxIncrement: PropTypes.func,
-  addCounter: PropTypes.func.isRequired,
-  subscribeToMore: PropTypes.func.isRequired,
-  reduxCount: PropTypes.number.isRequired
+  subscribeToMore: PropTypes.func.isRequired
 };
 
 const CounterWithApollo = compose(
   graphql(COUNTER_QUERY, {
-    props({ data: { loading, counter, subscribeToMore } }) {
+    props({ data: { loading, error, counter, subscribeToMore } }) {
+      if (error) throw new Error(error);
       return { loading, counter, subscribeToMore };
     }
   }),

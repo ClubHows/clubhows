@@ -1,0 +1,49 @@
+type List {
+  _id: String!
+  name: String!
+  slug: String!
+  owner: String!
+  isPrivate: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Todo {
+  _id: String!
+  item: String!
+  author: String
+  isPrivate: Boolean
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+extend type Query {
+  # Get all todos
+  todos(orderBy: OrderByUserInput, filter: FilterUserInput): [Todo]
+  # Get list by id
+  getTodoList(_id: String!): List
+  # Get list by slug
+  getListBySlug(slug: String!): List
+  # Get todos by list
+  getTodosByList(listId: String!): [Todo]
+}
+
+extend type Mutation {
+  createTodoList(input: CreateListUserInput!): List!
+  addTodoItem(input: CreateTodoItemUserInput!): Todo!
+  removeTodoList(listId: String!): List!
+  removeTodoItem(todoId: String!): Todo!
+}
+
+extend type Subscription {}
+
+input CreateListUserInput {
+  name: String!
+  isPrivate: Boolean!
+}
+
+input CreateTodoItemUserInput {
+  item: String!
+  listId: String!
+  isPrivate: Boolean!
+}
