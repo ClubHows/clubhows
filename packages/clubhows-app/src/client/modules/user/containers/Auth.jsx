@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withApollo, graphql, compose } from 'react-apollo';
-import ApolloClient from 'apollo-client';
 import { Route, Redirect, NavLink, withRouter } from 'react-router-dom';
 import { withCookies, Cookies } from 'react-cookie';
 import decode from 'jwt-decode';
@@ -79,34 +78,7 @@ AuthNav.propTypes = {
   cookies: PropTypes.instanceOf(Cookies)
 };
 
-const AuthProfile = withCookies(({ cookies }) => {
-  return checkAuth(cookies) ? (
-    <NavLink to="/profile" className="nav-link" activeClassName="active">
-      {profileName(cookies)}
-    </NavLink>
-  ) : null;
-});
-
-AuthProfile.propTypes = {
-  cookies: PropTypes.instanceOf(Cookies)
-};
-
-const AuthLoggedIn = withCookies(({ cookies, label, to, ...rest }) => {
-  return checkAuth(cookies) ? (
-    <NavLink to={to} {...rest}>
-      {label}
-    </NavLink>
-  ) : null;
-});
-
-AuthLoggedIn.propTypes = {
-  component: PropTypes.func,
-  cookies: PropTypes.instanceOf(Cookies),
-  label: PropTypes.string,
-  to: PropTypes.string
-};
-
-const AuthLogout = ({ children, cookies, logout }) => {
+const AuthLogin = ({ children, cookies, logout }) => {
   return checkAuth(cookies) ? (
     <a href="#" onClick={() => logout()} className="nav-link">
       Logout
@@ -116,15 +88,13 @@ const AuthLogout = ({ children, cookies, logout }) => {
   );
 };
 
-AuthLogout.propTypes = {
-  client: PropTypes.instanceOf(ApolloClient),
+AuthLogin.propTypes = {
   children: PropTypes.object,
   cookies: PropTypes.instanceOf(Cookies),
-  history: PropTypes.object.isRequired,
   logout: PropTypes.func.isRequired
 };
 
-const AuthLogoutWithApollo = withCookies(
+const AuthLoginWithApollo = withCookies(
   withRouter(
     withApollo(
       compose(
@@ -158,10 +128,37 @@ const AuthLogoutWithApollo = withCookies(
             }
           })
         })
-      )(AuthLogout)
+      )(AuthLogin)
     )
   )
 );
+
+const AuthProfile = withCookies(({ cookies }) => {
+  return checkAuth(cookies) ? (
+    <NavLink to="/profile" className="nav-link" activeClassName="active">
+      {profileName(cookies)}
+    </NavLink>
+  ) : null;
+});
+
+AuthProfile.propTypes = {
+  cookies: PropTypes.instanceOf(Cookies)
+};
+
+const AuthLoggedIn = withCookies(({ cookies, label, to, ...rest }) => {
+  return checkAuth(cookies) ? (
+    <NavLink to={to} {...rest}>
+      {label}
+    </NavLink>
+  ) : null;
+});
+
+AuthLoggedIn.propTypes = {
+  component: PropTypes.func,
+  cookies: PropTypes.instanceOf(Cookies),
+  label: PropTypes.string,
+  to: PropTypes.string
+};
 
 const AuthRoute = withCookies(({ component: Component, cookies, scope, ...rest }) => {
   return (
@@ -199,7 +196,7 @@ AuthLoggedInRoute.propTypes = {
 
 export { AuthNav };
 export { AuthLoggedIn };
+export { AuthLoginWithApollo as AuthLogin };
 export { AuthProfile };
-export { AuthLogoutWithApollo as AuthLogout };
 export { AuthRoute };
 export { AuthLoggedInRoute };

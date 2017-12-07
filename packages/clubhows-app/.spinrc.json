@@ -1,11 +1,11 @@
 {
   "builders": {
     "server": {
-      "stack": ["server", "react-native-web"],
+      "stack": ["react-native-web", "server"],
       "enabled": true
     },
     "web": {
-      "stack": ["web", "react-native-web"],
+      "stack": ["react-native-web", "web"],
       "openBrowser": true,
       "enabled": true
     },
@@ -18,7 +18,7 @@
       "enabled": false
     },
     "test": {
-      "stack": "server",
+      "stack": ["react-native-web", "server"],
       "roles": ["test"]
     }
   },

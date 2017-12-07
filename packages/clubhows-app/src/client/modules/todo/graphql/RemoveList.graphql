@@ -1,5 +1,0 @@
-mutation removeList($listId: Int!) {
-  removeList(listId: $id) {
-    _id
-  }
-}

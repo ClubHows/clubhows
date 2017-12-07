@@ -1,4 +1,5 @@
 [ignore]
+.*/node_modules/@expo/.*
 .*/node_modules/animated/.*
 .*/node_modules/babel-plugin-transform-react-remove-prop-types/.*
 .*/node_modules/bcryptjs/.*
@@ -6,7 +7,7 @@
 .*/node_modules/haul/.*
 .*/node_modules/metro-bundler/.*
 .*/node_modules/persistgraphql/.*
-.*/node_modules/react-native-fbads/.*
+.*/node_modules/react-aoollo/.*
 .*/node_modules/react-native-tab-view/.*
 .*/node_modules/react-navigation/.*
 .*/node_modules/react-native/.*

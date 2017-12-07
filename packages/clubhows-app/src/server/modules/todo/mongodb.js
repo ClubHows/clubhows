@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import slugify from 'slugify';
 
-import mongodb from '../../../server/mongodb/connector';
+import mongodb from '../../../server/mongodb';
 
 import ListSchema from './Todo';
 import log from '../../../common/log';
@@ -40,23 +40,6 @@ export default class Todo {
       .limit(limit)
       .skip(after)
       .sort({ updatedAt: 'desc' });
-  }
-
-  async listsPagination(ownerId, limit, after) {
-    let where = '';
-    if (after > 0) {
-      where = `id < ${after}`;
-    }
-
-    return await ListSchema.getListsByOwner(ownerId, limit, after);
-  }
-
-  async getTotal() {
-    return await ListSchema.getTotal();
-  }
-
-  async getNextPageFlag(date) {
-    return await ListSchema.find({ updatedAt: { $lt: date } }).count();
   }
 
   createTodoList({ name, owner, isPrivate }) {

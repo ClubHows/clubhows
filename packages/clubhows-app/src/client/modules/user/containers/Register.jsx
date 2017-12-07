@@ -1,7 +1,5 @@
 // React
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 // Apollo
 import { graphql, compose } from 'react-apollo';
@@ -11,15 +9,13 @@ import RegisterView from '../components/RegisterView';
 
 import REGISTER from '../graphql/Register.graphql';
 
+import settings from '../../../../../settings';
+
 class Register extends React.Component {
   render() {
     return <RegisterView {...this.props} />;
   }
 }
-
-Register.propTypes = {
-  register: PropTypes.func.isRequired
-};
 
 const RegisterWithApollo = compose(
   graphql(REGISTER, {
@@ -29,10 +25,14 @@ const RegisterWithApollo = compose(
           const { data: { register } } = await mutate({
             variables: { input: { username, email, password } }
           });
+
           if (register.errors) {
             return { errors: register.errors };
           }
           if (history) {
+            if (settings.subscription.enabled) {
+              return history.push('/subscription');
+            }
             return history.push('/profile');
           }
           if (navigation) {
@@ -46,16 +46,4 @@ const RegisterWithApollo = compose(
   })
 )(Register);
 
-export default connect(
-  state => ({
-    userNotification: state.user.userNotification
-  }),
-  dispatch => ({
-    onRegister() {
-      dispatch({
-        type: 'USER_REGISTER',
-        value: 'Registration success! Please check your email and click the confirmation link.'
-      });
-    }
-  })
-)(RegisterWithApollo);
+export default RegisterWithApollo;

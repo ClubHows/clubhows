@@ -16,8 +16,6 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
         {helmet.link.toComponent()}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="apple-mobile-web-app-title" content="ClubHows" />
-        <meta name="application-name" content="ClubHows" />
         <link rel="apple-touch-icon" sizes="180x180" href={`/${assetMap['apple-touch-icon.png']}`} />
         <link rel="icon" type="image/png" href={`/${assetMap['favicon-32x32.png']}`} sizes="32x32" />
         <link rel="icon" type="image/png" href={`/${assetMap['favicon-16x16.png']}`} sizes="16x16" />
@@ -26,7 +24,6 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
         <link rel="shortcut icon" href={`/${assetMap['favicon.ico']}`} />
         <meta name="msapplication-config" content={`/${assetMap['browserconfig.xml']}`} />
         <meta name="theme-color" content="#ffffff" />
-        <link rel="stylesheet" href="node_modules/@atlaskit/css-reset/dist/bundle.css" />
         {!__DEV__ && <link rel="stylesheet" type="text/css" href={`/${assetMap['index.css']}`} />}
         {!!__DEV__ && (
           <style
@@ -36,11 +33,6 @@ const Html = ({ content, state, assetMap, css, helmet, token, refreshToken }) =>
           />
         )}
         {!!css && css}
-        {modules.scriptsInserts.map((script, i) => {
-          if (script) {
-            return <script key={i} src={script} />;
-          }
-        })}
       </head>
       <body {...bodyAttrs}>
         <div id="content" dangerouslySetInnerHTML={{ __html: content || '' }} />

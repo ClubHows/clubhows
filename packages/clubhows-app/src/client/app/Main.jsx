@@ -15,14 +15,9 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 // eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies, import/extensions
 // import queryMap from 'persisted_queries.json';
 import ReactGA from 'react-ga';
-import { CookiesProvider } from 'react-cookie';
 import url from 'url';
-// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies, import/extensions
 
-// import { ThemeProvider } from 'styled-components';
-//  import theme from 'styled-theming';
-// import grommet from '../modules/ui-grommet/theme';
-
+import RedBox from './RedBox';
 import createApolloClient from '../../common/createApolloClient';
 import createReduxStore, { storeReducer } from '../../common/createReduxStore';
 import settings from '../../../settings';
@@ -114,8 +109,7 @@ let link = ApolloLink.split(
 
 const client = createApolloClient({
   link: ApolloLink.from((settings.app.logging.apolloLogging ? [new LoggingLink()] : []).concat([link])),
-  cache,
-  connectToDevTools: true
+  cache
 });
 
 if (window.__APOLLO_STATE__) {
@@ -133,9 +127,7 @@ const logPageView = location => {
 ReactGA.initialize(settings.analytics.ga.trackingId);
 logPageView(window.location);
 
-history.listen(location => {
-  logPageView(location);
-});
+history.listen(location => logPageView(location));
 
 let store;
 if (module.hot && module.hot.data && module.hot.data.store) {
@@ -155,16 +147,44 @@ if (module.hot) {
   });
 }
 
-// theme('grommet', grommet);
+class ServerError extends Error {
+  constructor(error) {
+    super();
+    for (const key of Object.getOwnPropertyNames(error)) {
+      this[key] = error[key];
+    }
+    this.name = 'ServerError';
+  }
+}
 
-const Main = () => (
-  <CookiesProvider>
-    <Provider store={store}>
-      <ApolloProvider client={client}>
-        <ConnectedRouter history={history}>{Routes}</ConnectedRouter>
-      </ApolloProvider>
-    </Provider>
-  </CookiesProvider>
-);
+class Main extends React.Component {
+  constructor(props) {
+    super(props);
+    const serverError = window.__SERVER_ERROR__;
+    if (serverError) {
+      this.state = { error: new ServerError(serverError) };
+    } else {
+      this.state = {};
+    }
+  }
+
+  componentDidCatch(error, info) {
+    this.setState({ error, info });
+  }
+
+  render() {
+    return this.state.error ? (
+      <RedBox error={this.state.error} />
+    ) : (
+      modules.getWrappedRoot(
+        <Provider store={store}>
+          <ApolloProvider client={client}>
+            <ConnectedRouter history={history}>{Routes}</ConnectedRouter>
+          </ApolloProvider>
+        </Provider>
+      )
+    );
+  }
+}
 
 export default Main;

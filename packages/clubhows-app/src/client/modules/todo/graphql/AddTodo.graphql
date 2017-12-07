@@ -1,9 +1,0 @@
-#import "./Todo.graphql"
-
-mutation addTodoItem($input: AddPostInput!) {
-  addTodoItem(input: $input) {
-    items {
-      ... TodoInfo
-    }
-  }
-}

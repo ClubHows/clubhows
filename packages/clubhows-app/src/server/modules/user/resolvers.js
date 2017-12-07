@@ -6,8 +6,6 @@ import { refreshTokens, tryLogin } from './auth';
 import FieldError from '../../../common/FieldError';
 import settings from '../../../../settings';
 
-import log from '../../../common/log';
-
 export default pubsub => ({
   Query: {
     users: withAuth(['user:view:all'], (obj, { orderBy, filter }, context) => {
@@ -15,22 +13,17 @@ export default pubsub => ({
     }),
     user: withAuth(
       (obj, args, context) => {
-        return context.user._id !== args._id ? ['user:view'] : ['user:view:self'];
+        return context.user.id !== args.id ? ['user:view'] : ['user:view:self'];
       },
-      (obj, { _id }, context) => {
-        return context.User.getUser(_id);
+      (obj, { id }, context) => {
+        return context.User.getUser(id);
       }
     ),
-    async currentUser(obj, args, context) {
-      log('resolvers 25:', context.user);
-      try {
-        if (context.user) {
-          const current = await context.User.getUser(context.user._id);
-          await log('resolvers 29:', current);
-          return current;
-        }
-      } catch (e) {
-        return e;
+    currentUser(obj, args, context) {
+      if (context.user) {
+        return context.User.getUser(context.user.id);
+      } else {
+        return null;
       }
     }
   },
@@ -38,7 +31,7 @@ export default pubsub => ({
     profile(obj) {
       return obj;
     },
-    facebook(obj) {
+    auth(obj) {
       return obj;
     }
   },
@@ -57,36 +50,25 @@ export default pubsub => ({
       }
     }
   },
-  FacebookProfile: {
+  UserAuth: {
+    certificate(obj) {
+      return obj;
+    },
+    facebook(obj) {
+      return obj;
+    }
+  },
+  CertificateAuth: {
+    serial(obj) {
+      return obj.serial;
+    }
+  },
+  FacebookAuth: {
     fbId(obj) {
       return obj.fbId;
     },
     displayName(obj) {
       return obj.displayName;
-    },
-    accessToken(obj) {
-      return obj.accessToken;
-    },
-    expiresAt(obj) {
-      return obj.expiresAt;
-    },
-    email(obj) {
-      return obj.email;
-    },
-    firstName(obj) {
-      return obj.firstName;
-    },
-    lastName(obj) {
-      return obj.lastName;
-    },
-    link(obj) {
-      return obj.link;
-    },
-    gender(obj) {
-      return obj.gender;
-    },
-    locale(obj) {
-      return obj.locale;
     }
   },
   Mutation: {
@@ -106,42 +88,43 @@ export default pubsub => ({
 
         e.throwIf();
 
-        let _id = 0;
-        let userAdded;
+        let userId = 0;
         if (!emailExists) {
           let isActive = false;
           if (!settings.user.auth.password.confirm) {
             isActive = true;
           }
 
-          userAdded = await context.User.addUser({ ...input, isActive });
+          [userId] = await context.User.register({ ...input, isActive });
+
           // if user has previously logged with facebook auth
         } else {
-          await context.User.updatePassword(emailExists._id, input.password);
-          _id = emailExists.userId;
+          await context.User.updatePassword(emailExists.userId, input.password);
+          userId = emailExists.userId;
         }
+
+        const user = await context.User.getUser(userId);
 
         if (context.mailer && settings.user.auth.password.sendConfirmationEmail && !emailExists && context.req) {
           // async email
-          await jwt.sign({ user: pick(userAdded, '_id') }, context.SECRET, { expiresIn: '1d' }, (err, emailToken) => {
+          jwt.sign({ user: pick(user, 'id') }, context.SECRET, { expiresIn: '1d' }, (err, emailToken) => {
             const encodedToken = Buffer.from(emailToken).toString('base64');
             const url = `${context.req.protocol}://${context.req.get('host')}/confirmation/${encodedToken}`;
-
             context.mailer.sendMail({
               from: `${settings.app.name} <${process.env.EMAIL_USER}>`,
-              to: userAdded.email,
+              to: user.email,
               subject: 'Confirm Email',
-              html: `<p>Hi, ${userAdded.username}!</p>
+              html: `<p>Hi, ${user.username}!</p>
               <p>Welcome to ${settings.app.name}. Please click the following link to confirm your email:</p>
               <p><a href="${url}">${url}</a></p>
-              <p>Below is your login information</p>
-              <p>Your email is: ${userAdded.email}</p>
+              <p>Below are your login information</p>
+              <p>Your email is: ${user.email}</p>
               <p>Your password is: ${input.password}</p>`
             });
-            log('register email sent');
           });
         }
-        return { userAdded };
+
+        return { user };
       } catch (e) {
         return { errors: e };
       }
@@ -189,7 +172,7 @@ export default pubsub => ({
     },
     addUser: withAuth(
       (obj, args, context) => {
-        return context.user._id !== args._id ? ['user:create'] : ['user:create:self'];
+        return context.user.id !== args.id ? ['user:create'] : ['user:create:self'];
       },
       async (obj, { input }, context) => {
         try {
@@ -211,8 +194,8 @@ export default pubsub => ({
 
           e.throwIf();
 
-          const [createdUserId] = await context.User.addUser({ ...input });
-          await context.User.editUser({ id: createdUserId, ...input });
+          const [createdUserId] = await context.User.register({ ...input });
+          await context.User.editUserProfile({ id: createdUserId, ...input });
 
           if (settings.user.auth.certificate.enabled) {
             await context.User.editAuthCertificate({ id: createdUserId, ...input });
@@ -247,18 +230,18 @@ export default pubsub => ({
     ),
     editUser: withAuth(
       (obj, args, context) => {
-        return context.user._id !== args._id ? ['user:update'] : ['user:update:self'];
+        return context.user.id !== args.id ? ['user:update'] : ['user:update:self'];
       },
       async (obj, { input }, context) => {
         try {
           const e = new FieldError();
           const userExists = await context.User.getUserByUsername(input.username);
-          if (userExists && userExists._id !== input.id) {
+          if (userExists && userExists.id !== input.id) {
             e.setError('username', 'Username already exists.');
           }
 
           const emailExists = await context.User.getUserByEmail(input.email);
-          if (emailExists && emailExists._id !== input.id) {
+          if (emailExists && emailExists.id !== input.id) {
             e.setError('email', 'E-mail already exists.');
           }
 
@@ -285,12 +268,12 @@ export default pubsub => ({
     ),
     deleteUser: withAuth(
       (obj, args, context) => {
-        return context.user._id !== args._id ? ['user:delete'] : ['user:delete:self'];
+        return context.user.id !== args.id ? ['user:delete'] : ['user:delete:self'];
       },
-      async (obj, { _id }, context) => {
+      async (obj, { id }, context) => {
         try {
           const e = new FieldError();
-          const user = await context.User.getUser(_id);
+          const user = await context.User.getUser(id);
           if (!user) {
             e.setError('delete', 'User does not exist.');
             e.throwIf();
@@ -301,7 +284,7 @@ export default pubsub => ({
             e.throwIf();
           }
 
-          const isDeleted = await context.User.deleteUser(_id);
+          const isDeleted = await context.User.deleteUser(id);
           if (isDeleted) {
             return { user };
           } else {
@@ -357,20 +340,16 @@ export default pubsub => ({
         e.throwIf();
 
         const token = Buffer.from(reset.token, 'base64').toString();
-        jwt.verify(token, context.SECRET, async (err, decoded) => {
-          if (!err) {
-            const { email, password } = decoded;
-            const user = await context.User.getUserByEmail(email);
-            if (user.password !== password) {
-              e.setError('token', 'Invalid token');
-              e.throwIf();
-            }
+        const { email, password } = jwt.verify(token, context.SECRET);
+        const user = await context.User.getUserByEmail(email);
+        if (user.password !== password) {
+          e.setError('token', 'Invalid token');
+          e.throwIf();
+        }
 
-            return await context.User.updatePassword(user._id, reset.password);
-          }
-          e.setError('token', err.message);
-          e.throw();
-        });
+        if (user) {
+          await context.User.updatePassword(user.id, reset.password);
+        }
         return { errors: null };
       } catch (e) {
         return { errors: e };

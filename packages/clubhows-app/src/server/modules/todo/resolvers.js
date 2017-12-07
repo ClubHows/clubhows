@@ -16,47 +16,16 @@ export default pubsub => ({
     },
     async todos(obj, { orderBy, filter }, context) {
       return await context.Todo.todos({ orderBy, filter });
-    },
-    async lists(obj, { limit, after }, context) {
-      let edgesArray = [];
-      let lists = await context.Todo.listsPagination(context.user._id, limit, after);
-      log('todo reso 23: ', lists);
-      lists.map(list => {
-        edgesArray.push({
-          cursor: list.updatedAt,
-          node: {
-            _id: list._id,
-            name: list.name,
-            slug: list.slug,
-            isPrivate: list.isPrivate,
-            updatedAt: list.updatedAt
-          }
-        });
-      });
-
-      const endCursor = edgesArray.length > 0 ? edgesArray[edgesArray.length - 1].cursor : 0;
-      log('todo reso 38: ', endCursor);
-
-      const values = await Promise.all([context.Todo.getTotal(), context.Todo.getNextPageFlag(endCursor)]);
-      await log('todo reso 41: ', values);
-      return {
-        totalCount: values[0],
-        edges: edgesArray,
-        pageInfo: {
-          endCursor: endCursor,
-          hasNextPage: values[1] > 0
-        }
-      };
     }
   },
   Mutation: {
     createTodoList(_, args, context) {
       const { name, owner, isPrivate } = args.input;
-      return context.Todo.createTodoList({ name: name, owner: context.user._id, isPrivate: isPrivate });
+      return context.Todo.createTodoList({ name: name, owner: context.user.id, isPrivate: isPrivate });
     },
     addTodoItem(_, args, context) {
       const { slug, name, owner } = args.input;
-      return context.Todo.addTodoItem({
+      return context.Team.addTeam({
         slug: args.slug,
         name: args.name,
         addr1: args.addr1,

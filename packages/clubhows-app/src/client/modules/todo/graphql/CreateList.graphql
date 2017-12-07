@@ -1,7 +1,0 @@
-#import "./List.graphql"
-
-mutation createTodoList($input: CreateListUserInput!) {
-  createTodoList(input: $input) {
-    ... ListsInfo
-  }
-}

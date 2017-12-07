@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, NavLink } from 'react-router-dom';
 import { constructUploadOptions } from 'apollo-fetch-upload';
-import { ListItem } from '../common/components/web';
+import { MenuItem } from '../../modules/common/components/web';
 
 // Component and helpers
 import Upload from './containers/Upload';
@@ -12,11 +12,11 @@ import Feature from '../connector';
 export default new Feature({
   route: <Route exact path="/upload" component={Upload} />,
   navItem: (
-    <ListItem key="/upload">
+    <MenuItem key="/upload">
       <NavLink to="/upload" className="nav-link" activeClassName="active">
         Upload
       </NavLink>
-    </ListItem>
+    </MenuItem>
   ),
   reducer: { upload: reducers },
   createFetchOptions: constructUploadOptions

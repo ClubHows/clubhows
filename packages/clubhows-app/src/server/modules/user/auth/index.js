@@ -3,10 +3,9 @@ import { pick } from 'lodash';
 import bcrypt from 'bcryptjs';
 import settings from '../../../../../settings';
 import FieldError from '../../../../common/FieldError';
-import log from '../../../../common/log';
 
 export const createTokens = async (user, secret, refreshSecret) => {
-  let tokenUser = pick(user, ['_id', 'username', 'role']);
+  let tokenUser = pick(user, ['id', 'username', 'role']);
   tokenUser.fullName = user.firstName ? `${user.firstName} ${user.lastName}` : null;
 
   const createToken = jwt.sign(
@@ -21,7 +20,7 @@ export const createTokens = async (user, secret, refreshSecret) => {
 
   const createRefreshToken = jwt.sign(
     {
-      user: user._id
+      user: user.id
     },
     refreshSecret,
     {
@@ -34,8 +33,6 @@ export const createTokens = async (user, secret, refreshSecret) => {
 
 export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   let userId = -1;
-  log(User);
-
   try {
     const { user } = jwt.decode(refreshToken);
     userId = user;
@@ -60,12 +57,11 @@ export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   return {
     token: newToken,
     refreshToken: newRefreshToken,
-    user: pick(user, ['_id', 'username', 'role'])
+    user: pick(user, ['id', 'username', 'role'])
   };
 };
 
 export const tryLogin = async (email, password, User, SECRET) => {
-  log(email, password, User, SECRET);
   const e = new FieldError();
   const user = await User.getUserByEmail(email);
 
@@ -75,7 +71,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
     e.setError('email', 'Please enter a valid e-mail.');
     e.throwIf();
   }
-  log(user);
+
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     // bad password
@@ -83,7 +79,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
     e.throwIf();
   }
 
-  if (settings.user.auth.password.confirm && !user.is_active) {
+  if (settings.user.auth.password.confirm && !user.isActive) {
     e.setError('email', 'Please confirm your e-mail first.');
     e.throwIf();
   }
@@ -99,7 +95,6 @@ export const tryLogin = async (email, password, User, SECRET) => {
 };
 
 export const tryLoginSerial = async (serial, User, SECRET) => {
-  log(User);
   try {
     const certAuth = await User.getUserWithSerial(serial);
 

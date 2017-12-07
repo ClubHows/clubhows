@@ -1,5 +1,0 @@
-fragment TeamInfo on Team {
-  id
-  name
-  slug
-}

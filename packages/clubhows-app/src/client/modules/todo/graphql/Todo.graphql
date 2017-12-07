@@ -1,5 +1,0 @@
-fragment TodoInfo on List {
-  item
-  author
-  isPrivate
-}

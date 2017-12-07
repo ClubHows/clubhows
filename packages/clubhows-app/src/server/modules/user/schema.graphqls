@@ -1,32 +1,31 @@
 type User {
-  id: String!
+  id: Int!
   username: String!
   role: String!
   isActive: Boolean
   email: String!
-  password: String
   profile: UserProfile
-  facebook: FacebookProfile
-  auth_certificate: String
-}
-
-type FacebookProfile {
-  fbId: String
-  displayName: String
-  accessToken: String
-  expiresAt: Date
-  email: String
-  firstName: String
-  lastName: String
-  link: String
-  gender: String
-  locale: String
+  auth: UserAuth
 }
 
 type UserProfile {
   firstName: String
   lastName: String
   fullName: String
+}
+
+type UserAuth {
+  certificate: CertificateAuth
+  facebook: FacebookAuth
+}
+
+type CertificateAuth {
+  serial: String
+}
+
+type FacebookAuth {
+  fbId: String
+  displayName: String
 }
 
 type UserPayload {
@@ -52,7 +51,7 @@ extend type Query {
   # Get all users ordered by: OrderByUserInput add filtered by: FilterUserInput
   users(orderBy: OrderByUserInput, filter: FilterUserInput): [User]
   # Get user by id
-  user(id: String!): User
+  user(id: Int!): User
   # Get current user
   currentUser: User
 }
@@ -71,7 +70,7 @@ extend type Mutation {
   # Edit a user
   editUser(input: EditUserInput!): UserPayload!
   # Delete a user
-  deleteUser(id: String!): UserPayload!
+  deleteUser(id: Int!): UserPayload!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   resetPassword(input: ResetPasswordInput!): ResetPayload!
 }

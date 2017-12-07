@@ -2,59 +2,37 @@ type List {
   _id: String!
   name: String!
   slug: String!
-  items: [Item]
   owner: String!
   isPrivate: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-type Item {
+type Todo {
   _id: String!
   item: String!
-  author: String!
+  author: String
   isPrivate: Boolean
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-# Edges for Lists
-type ListEdges {
-  node: List
-  cursor: String
-}
-
-# ListInfo for Lists
-type ListPageInfo {
-  endCursor: String
-  hasNextPage: Boolean
-}
-
-# Posts relay-style pagination query
-type Lists {
-  totalCount: Int
-  edges: [ListEdges]
-  pageInfo: ListPageInfo
-}
-
 extend type Query {
-  # Get all owned lists
-  lists(limit: Int, after: Int): Lists
   # Get all todos
-  todos(orderBy: OrderByUserInput, filter: FilterUserInput): [Item]
+  todos(orderBy: OrderByUserInput, filter: FilterUserInput): [Todo]
   # Get list by id
   getTodoList(_id: String!): List
   # Get list by slug
   getListBySlug(slug: String!): List
   # Get todos by list
-  getTodosByList(listId: String!): [Item]
+  getTodosByList(listId: String!): [Todo]
 }
 
 extend type Mutation {
   createTodoList(input: CreateListUserInput!): List!
-  addTodoItem(input: CreateTodoItemUserInput!): Item!
+  addTodoItem(input: CreateTodoItemUserInput!): Todo!
   removeTodoList(listId: String!): List!
-  removeTodoItem(todoId: String!): Item!
+  removeTodoItem(todoId: String!): Todo!
 }
 
 extend type Subscription {}

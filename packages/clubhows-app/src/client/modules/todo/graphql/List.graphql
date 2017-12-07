@@ -1,7 +1,0 @@
-fragment ListsInfo on List {
-  _id
-  name
-  slug
-  isPrivate
-  updatedAt
-}

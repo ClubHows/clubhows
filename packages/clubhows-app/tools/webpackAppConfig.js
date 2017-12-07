@@ -1,44 +1,21 @@
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-
-const getClientEnvironment = require('../config/env');
-
-const publicPath = '/';
-const publicUrl = '';
-const env = getClientEnvironment(publicUrl);
-// App-specific back-end Webpack config should be here
-const envar = {
-  output: {
-    publicPath: publicPath
-  },
-  plugins: [new InterpolateHtmlPlugin(env.raw)],
-  node: {
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  }
-};
 // App-specific back-end Webpack config should be here
 const server = {
-  node: {
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  }
+  //  entry: {
+  //    index: [
+  //      'babel-polyfill',
+  //      './src/server/index.js'
+  //    ]
+  //  }
 };
 
 // App-specific web front-end Webpack config should be here
 const web = {
-  node: {
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    child_process: 'empty'
-  }
+  //  entry: {
+  //    index: [
+  //      'babel-polyfill',
+  //      './src/client/index.jsx'
+  //    ]
+  //  }
 };
 
 // App-specific Android React Native front-end Webpack config should be here
@@ -62,17 +39,22 @@ const ios = {
 };
 
 const dependencyPlatforms = {
+  antd: 'web',
+  'antd-mobile': ['ios', 'android'],
   'apollo-engine': 'server',
   bcryptjs: 'server',
   'body-parser': 'server',
+  bootstrap: 'web',
+  cors: 'server',
+  dotenv: 'server',
   dataloader: 'server',
+  'error-stack-parser': ['server', 'web'],
   expo: ['ios', 'android'],
   express: 'server',
   'apollo-server-express': 'server',
   'apollo-upload-server': 'server',
   'graphql-subscriptions': 'server',
   'graphql-tools': 'server',
-  grommet: 'web',
   history: 'web',
   humps: 'server',
   'immutability-helper': ['ios', 'android', 'web'],
@@ -81,10 +63,17 @@ const dependencyPlatforms = {
   'jwt-decode': 'web',
   knex: 'server',
   mysql2: 'server',
+  'native-base': ['ios', 'android'],
   nodemailer: 'server',
+  opencollective: 'server',
+  passport: 'server',
+  'passport-local': 'server',
+  'passport-facebook': 'server',
   persistgraphql: ['server', 'web'],
   'performance-now': 'server',
   pg: 'server',
+  'rc-menu': ['server', 'web'],
+  'redbox-react': ['server', 'web'],
   'react-cookie': ['server', 'web'],
   'react-dom': 'web',
   'react-dropzone': 'web',
@@ -103,12 +92,16 @@ const dependencyPlatforms = {
   'redux-devtools-extension': 'web',
   'redux-form': 'web',
   'serialize-javascript': 'server',
+  shelljs: 'server',
   'source-map-support': 'server',
+  'sourcemapped-stacktrace': ['server', 'web'],
   sqlite3: 'server',
+  stripe: 'server',
+  'stripe-local': 'server',
   'styled-components': ['server', 'web'],
   'subscriptions-transport-ws': ['ios', 'android', 'web'],
   'universal-cookie-express': 'server',
   '@expo/vector-icons': ['ios', 'android']
 };
 
-module.exports = { server, web, android, ios, dependencyPlatforms, envar };
+module.exports = { server, web, android, ios, dependencyPlatforms };
