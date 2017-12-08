@@ -1,5 +1,6 @@
 #import "./Profile.graphql"
 #import "./FacebookProfile.graphql"
+#import "./GoogleProfile.graphql"
 
 fragment UserInfo on User {
   id
@@ -12,6 +13,9 @@ fragment UserInfo on User {
   }
   facebook {
     ...FacebookProfileInfo
+  }
+  google {
+    ...GoogleProfileInfo
   }
   auth_certificate
 }

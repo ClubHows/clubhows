@@ -1,0 +1,12 @@
+fragment GoogleProfileInfo on GoogleProfile {
+  googleId
+  displayName
+  accessToken
+  expiresAt
+  email
+  firstName
+  lastName
+  link
+  gender
+  locale
+}

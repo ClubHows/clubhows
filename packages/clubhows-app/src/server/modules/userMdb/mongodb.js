@@ -113,6 +113,56 @@ export default class UserDAO {
     );
   }
 
+  async getUserByGoogleIdOrEmail(id, email) {
+    const userCheck = await UserSchema.findOne({ $or: [{ email: email }, { 'google.googleId': id }] });
+    log('mongodb 118:', userCheck);
+    return userCheck;
+  }
+
+  async createGoogleOauth({ username, email, password, avatar, userId, google, name, role, isActive }) {
+    log('mongodb 123:', username, email, password, avatar, userId, google, name, role, isActive);
+    const passwordHashed = await bcrypt.hashSync(password, 12);
+    return await UserSchema.create({
+      _id: uuidv5(email, process.env.CLUBHOWS_APP_UUID),
+      username: username,
+      email: email,
+      password: passwordHashed,
+      avatar: avatar,
+      google: {
+        googleId: google.googleId,
+        displayName: google.displayName,
+        firstName: google.firstName,
+        lastName: google.lastName,
+        email: google.email
+      },
+      name: {
+        firstName: name.firstName,
+        lastName: name.lastName,
+        fullName: name.fullName
+      },
+      role: role,
+      isActive: isActive
+    });
+  }
+
+  addGoogleOauth({ _id, avatar, google, name }) {
+    log('mongodb 145:', _id, google, name);
+    return UserSchema.update(
+      { _id: _id },
+      {
+        facebook: {
+          fbId: google.googleId,
+          displayName: google.displayName,
+          email: google.email
+        },
+        name: {
+          fullName: name.fullName
+        },
+        avatar: avatar
+      }
+    );
+  }
+
   async updatePassword(_id, password) {
     const passwordHashed = await bcrypt.hashSync(password, 12);
     return UserSchema.update({ _id: _id }, { password: passwordHashed });
