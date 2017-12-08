@@ -1,0 +1,17 @@
+#import "./List.graphql"
+
+query lists($limit: Int!, $after: Int) {
+  lists(limit: $limit, after: $after) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...ListsInfo
+      }
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}

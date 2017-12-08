@@ -92,7 +92,7 @@ export default class UserDAO {
         fullName: name.fullName
       },
       role: role,
-      isActive: !!isActive
+      isActive: isActive
     });
   }
 

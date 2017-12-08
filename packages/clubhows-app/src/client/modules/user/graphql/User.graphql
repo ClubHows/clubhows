@@ -1,6 +1,6 @@
 #import "./Profile.graphql"
 
-fragment UserInfo on User {
+fragment UserInfo2 on User {
   id
   username
   role

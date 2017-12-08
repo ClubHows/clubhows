@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ListItem } from '../common/components/web';
+import { MenuItem } from '../common/components/web';
 import Team from './containers/Team';
 import reducers from './reducers';
 
@@ -12,11 +12,11 @@ export default new Feature({
   route: <AuthRoute exact path="/team" scope="user" component={Team} />,
   navItem: (
     <AuthNav scope="user" key="/team">
-      <ListItem key="/team">
+      <MenuItem key="/team">
         <NavLink to="/team" className="nav-link" activeClassName="active">
           Team
         </NavLink>
-      </ListItem>
+      </MenuItem>
     </AuthNav>
   ),
   reducer: { team: reducers }

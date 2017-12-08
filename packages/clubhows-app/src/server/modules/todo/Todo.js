@@ -1,5 +1,12 @@
 import mongoose from 'mongoose';
 
+const ItemSchema = new mongoose.Schema({
+  item: { type: String, required: true },
+  author: { type: String, required: true },
+  completed: { type: Boolean, default: false },
+  order: { type: Number }
+});
+
 const ListSchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true },
@@ -25,7 +32,18 @@ ListSchema.statics = {
     return await this.findOne({ 'list.slug': slug }).then(list => list);
   },
   async getListByOwner(ownerId) {
-    return await this.find({ 'list.owner': new mongoose.Types.ObjectId(ownerId) }).then(list => list);
+    return await this.findOne({ 'list.owner': ownerId }).then(list => list);
+  },
+  async getTotal() {
+    return await this.find().count();
+  },
+  async getListsByOwner(ownerId, limit, after) {
+    return await this.find({ owner: ownerId })
+      .select('_id name slug isPrivate updatedAt')
+      .skip(after)
+      .limit(limit)
+      .sort({ updatedAt: -1 })
+      .then(lists => lists);
   },
   async lists({ skip = 0, limit = 50 } = {}) {
     return await this.find()
@@ -38,12 +56,5 @@ ListSchema.statics = {
     return await this.findByIdAndRemove(_id);
   }
 };
-
-const ItemSchema = new mongoose.Schema({
-  item: { type: String, required: true },
-  author: { type: String, required: true },
-  completed: { type: Boolean, default: false },
-  order: { type: Number }
-});
 
 export default mongoose.model('List', ListSchema, 'List');
