@@ -4,14 +4,29 @@ type User {
   role: String!
   isActive: Boolean
   email: String!
+  avatar: String
   password: String
   profile: UserProfile
   facebook: FacebookProfile
+  google: GoogleProfile
   auth_certificate: String
 }
 
 type FacebookProfile {
   fbId: String
+  displayName: String
+  accessToken: String
+  expiresAt: Date
+  email: String
+  firstName: String
+  lastName: String
+  link: String
+  gender: String
+  locale: String
+}
+
+type GoogleProfile {
+  googleId: String
   displayName: String
   accessToken: String
   expiresAt: Date

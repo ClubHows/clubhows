@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
 import FacebookStrategy from 'passport-facebook';
+import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import { pick } from 'lodash';
 
 import UserDAO from './mongodb';
@@ -25,8 +26,8 @@ if (settings.user.auth.facebook.enabled) {
         clientID: settings.user.auth.facebook.clientID,
         clientSecret: settings.user.auth.facebook.clientSecret,
         callbackURL: '/auth/facebook/callback',
-        scope: ['email'],
-        profileFields: ['id', 'emails', 'displayName']
+        scope: settings.user.auth.facebook.scope,
+        profileFields: settings.user.auth.facebook.profileFields
       },
       async function(accessToken, refreshToken, profile, cb) {
         const { id, username, displayName, emails: [{ value }] } = profile;
@@ -68,6 +69,94 @@ if (settings.user.auth.facebook.enabled) {
                 email: value
               },
               name: {
+                fullName: displayName
+              },
+              role: 'user',
+              isActive: true
+            });
+            log('user index 56: ', createdUserId);
+            user = await User.getUser(createdUserId);
+          }
+          await log('user index 63: ', user);
+          return cb(null, pick(user, ['_id', 'username', 'role', 'email']));
+        } catch (err) {
+          return cb(err, {});
+        }
+      }
+    )
+  );
+}
+
+if (settings.user.auth.google.enabled) {
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: settings.user.auth.google.clientID,
+        clientSecret: settings.user.auth.google.clientSecret,
+        callbackURL: '/auth/google/callback',
+        scope: settings.user.auth.google.scope
+      },
+      async function(accessToken, refreshToken, profile, cb) {
+        log('user.index 100: ', profile);
+        const {
+          id,
+          username,
+          displayName,
+          name: { familyName: familyName, givenName: givenName },
+          emails: [{ value: email }],
+          photos: [{ value: avatar }]
+        } = profile;
+        try {
+          let user = await User.getUserByGoogleIdOrEmail(id, email);
+          await log('user index 36: ', user);
+          if (user !== null) {
+            let googleId;
+            let emailExist;
+            if ('google' in user) {
+              googleId = user.google.googleId;
+            }
+            if ('email' in user) {
+              emailExist = user.email;
+            }
+
+            await log('user index 38: ', googleId, emailExist);
+            if (googleId === undefined && emailExist === undefined) {
+              let name = user.name.fullName;
+              if (name === null || name === undefined) name = displayName;
+
+              await User.addGoogleOauth({
+                _id: user._id,
+                avatar: avatar,
+                google: {
+                  googleId: id,
+                  displayName: displayName,
+                  email: email,
+                  firstName: familyName,
+                  lastName: givenName
+                },
+                name: {
+                  firstName: familyName,
+                  lastName: givenName,
+                  fullName: name
+                }
+              });
+            }
+          } else {
+            const createdUserId = await User.createGoogleOauth({
+              username: username ? username : displayName,
+              email: email,
+              password: id,
+              avatar: avatar,
+              google: {
+                googleId: id,
+                displayName: displayName,
+                email: email,
+                firstName: givenName,
+                lastName: familyName
+              },
+              name: {
+                firstName: givenName,
+                lastName: familyName,
                 fullName: displayName
               },
               role: 'user',
@@ -186,7 +275,40 @@ export default new Feature({
           maxAge: 60 * 60 * 24 * 7,
           httpOnly: false
         });
-        log('User.index 184: ', res);
+        log('User.index 258: ', res);
+        res.redirect('/profile');
+      });
+    }
+
+    if (settings.user.auth.google.enabled) {
+      app.use(passport.initialize());
+
+      app.get('/auth/google', passport.authenticate('google'));
+
+      app.get('/auth/google/callback', passport.authenticate('google', { session: false }), async (req, res) => {
+        log('User.index 269: ', req.user);
+        const user = await User.getUser(req.user._id);
+        const refreshSecret = SECRET + user.password;
+        const [token, refreshToken] = await createTokens(req.user, SECRET, refreshSecret);
+
+        req.universalCookies.set('x-token', token, {
+          maxAge: 60 * 60 * 24 * 7,
+          httpOnly: true
+        });
+        req.universalCookies.set('x-refresh-token', refreshToken, {
+          maxAge: 60 * 60 * 24 * 7,
+          httpOnly: true
+        });
+
+        req.universalCookies.set('r-token', token, {
+          maxAge: 60 * 60 * 24 * 7,
+          httpOnly: false
+        });
+        req.universalCookies.set('r-refresh-token', refreshToken, {
+          maxAge: 60 * 60 * 24 * 7,
+          httpOnly: false
+        });
+        log('User.index 291: ', res);
         res.redirect('/profile');
       });
     }

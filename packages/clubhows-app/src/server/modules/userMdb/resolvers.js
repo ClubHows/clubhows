@@ -40,6 +40,9 @@ export default pubsub => ({
     },
     facebook(obj) {
       return obj;
+    },
+    google(obj) {
+      return obj;
     }
   },
   UserProfile: {
@@ -59,6 +62,38 @@ export default pubsub => ({
   },
   FacebookProfile: {
     fbId(obj) {
+      return obj.fbId;
+    },
+    displayName(obj) {
+      return obj.displayName;
+    },
+    accessToken(obj) {
+      return obj.accessToken;
+    },
+    expiresAt(obj) {
+      return obj.expiresAt;
+    },
+    email(obj) {
+      return obj.email;
+    },
+    firstName(obj) {
+      return obj.firstName;
+    },
+    lastName(obj) {
+      return obj.lastName;
+    },
+    link(obj) {
+      return obj.link;
+    },
+    gender(obj) {
+      return obj.gender;
+    },
+    locale(obj) {
+      return obj.locale;
+    }
+  },
+  GoogleProfile: {
+    googleId(obj) {
       return obj.fbId;
     },
     displayName(obj) {

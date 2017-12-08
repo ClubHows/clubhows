@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, max: 50 },
   email: { type: String, required: true, max: 50 },
   password: { type: String, max: 100 },
+  avatar: String,
   role: {
     type: String,
     required: true,
@@ -25,6 +26,18 @@ const UserSchema = new mongoose.Schema({
   },
   facebook: {
     fbId: String,
+    displayName: String,
+    accessToken: String,
+    expiresAt: Date,
+    email: String,
+    firstName: String,
+    lastName: String,
+    link: String,
+    gender: String,
+    locale: String
+  },
+  google: {
+    googleId: String,
     displayName: String,
     accessToken: String,
     expiresAt: Date,
