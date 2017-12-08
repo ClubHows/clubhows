@@ -42,6 +42,23 @@ export default class Todo {
       .sort({ updatedAt: 'desc' });
   }
 
+  async listsPagination(ownerId, limit, after) {
+    let where = '';
+    if (after > 0) {
+      where = `id < ${after}`;
+    }
+
+    return await ListSchema.getListsByOwner(ownerId, limit, after);
+  }
+
+  async getTotal() {
+    return await ListSchema.getTotal();
+  }
+
+  async getNextPageFlag(date) {
+    return await ListSchema.find({ updatedAt: { $lt: date } }).count();
+  }
+
   createTodoList({ name, owner, isPrivate }) {
     log(name, owner, isPrivate);
     const slug = slugify(name, { lower: true });

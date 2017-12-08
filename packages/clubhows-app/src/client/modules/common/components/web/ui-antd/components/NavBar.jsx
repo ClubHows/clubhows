@@ -8,6 +8,7 @@ import MenuItem from './MenuItem';
 
 import modules from '../../../../../../modules';
 import settings from '../../../../../../../../settings';
+import log from '../../../../../../../common/log';
 
 class NavBar extends React.Component {
   state = {
@@ -21,6 +22,7 @@ class NavBar extends React.Component {
   };
 
   render() {
+    log('Antd NavBar 25:', this.props.location);
     return (
       <Row gutter={8}>
         <Col span={14}>
@@ -48,11 +50,6 @@ class NavBar extends React.Component {
             style={{ lineHeight: '64px', float: 'right' }}
           >
             {modules.navItemsRight}
-            {__DEV__ && (
-              <MenuItem>
-                <a href="/graphiql">GraphiQL</a>
-              </MenuItem>
-            )}
           </Menu>
         </Col>
       </Row>

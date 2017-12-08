@@ -34,10 +34,30 @@ if (settings.user.auth.facebook.enabled) {
         try {
           let user = await User.getUserByFbIdOrEmail(id, value);
           await log('user index 36: ', user);
-          const { facebook: { fbId }, email } = user;
-          await log('user index 38: ', fbId, email);
-          if (fbId === undefined && email === undefined) {
-            const isActive = true;
+          if (user !== null) {
+            let fbId;
+            if ('facebook' in user) {
+              fbId = user.facebook.fbId;
+            }
+
+            await log('user index 38: ', fbId, value);
+            if (fbId === undefined && value === undefined) {
+              let name = user.name.fullName;
+              if (name === null || name === undefined) name = displayName;
+
+              await User.addFacebookOauth({
+                _id: user._id,
+                facebook: {
+                  fbId: id,
+                  displayName: displayName,
+                  email: value
+                },
+                name: {
+                  fullName: name
+                }
+              });
+            }
+          } else {
             const createdUserId = await User.createFacebookOauth({
               username: username ? username : displayName,
               email: value,
@@ -51,25 +71,10 @@ if (settings.user.auth.facebook.enabled) {
                 fullName: displayName
               },
               role: 'user',
-              isActive
+              isActive: true
             });
             log('user index 56: ', createdUserId);
             user = await User.getUser(createdUserId);
-          } else {
-            let name = user.name.fullName;
-            if (name === null || name === undefined) name = displayName;
-
-            await User.addFacebookOauth({
-              _id: user._id,
-              facebook: {
-                fbId: id,
-                displayName: displayName,
-                email: value
-              },
-              name: {
-                fullName: name
-              }
-            });
           }
           await log('user index 63: ', user);
           return cb(null, pick(user, ['_id', 'username', 'role', 'email']));
