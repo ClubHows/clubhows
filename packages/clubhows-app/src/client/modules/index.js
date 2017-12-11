@@ -1,3 +1,5 @@
+import landing from './landing';
+import dashboard from './dashboard';
 import counter from './counter';
 import post from './post';
 import todo from './todo';
@@ -9,4 +11,4 @@ import './favicon';
 
 import Feature from './connector';
 
-export default new Feature(counter, post, todo, user, pageNotFound);
+export default new Feature(landing, dashboard, counter, post, todo, user, pageNotFound);
