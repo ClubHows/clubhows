@@ -166,7 +166,7 @@ if (settings.user.auth.google.enabled) {
             user = await User.getUser(createdUserId);
           }
           await log('user index 63: ', user);
-          return cb(null, pick(user, ['_id', 'username', 'role', 'email']));
+          return cb(null, pick(user, ['_id', 'username', 'role', 'email', 'avatar']));
         } catch (err) {
           return cb(err, {});
         }
@@ -276,7 +276,7 @@ export default new Feature({
           httpOnly: false
         });
         log('User.index 258: ', res);
-        res.redirect('/profile');
+        res.redirect('/dashboard/');
       });
     }
 
@@ -309,7 +309,7 @@ export default new Feature({
           httpOnly: false
         });
         log('User.index 291: ', res);
-        res.redirect('/profile');
+        res.redirect('/dashboard/');
       });
     }
   }
