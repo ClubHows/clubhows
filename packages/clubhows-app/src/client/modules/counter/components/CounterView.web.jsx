@@ -25,14 +25,14 @@ const CounterView = ({ loading, counter, addCounter, reduxCount, onReduxIncremen
 
   if (loading) {
     return (
-      <PageLayout>
+      <PageLayout navSider={false}>
         {renderMetaData()}
         <div className="text-center">Loading...</div>
       </PageLayout>
     );
   } else {
     return (
-      <PageLayout>
+      <PageLayout navSider={false}>
         {renderMetaData()}
         <Section>
           <p>

@@ -6,7 +6,7 @@ import FieldError from '../../../../common/FieldError';
 import log from '../../../../common/log';
 
 export const createTokens = async (user, secret, refreshSecret) => {
-  let tokenUser = pick(user, ['_id', 'username', 'role']);
+  let tokenUser = pick(user, ['_id', 'username', 'role', 'avatar']);
   tokenUser.fullName = user.firstName ? `${user.firstName} ${user.lastName}` : null;
 
   const createToken = jwt.sign(
@@ -60,7 +60,7 @@ export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   return {
     token: newToken,
     refreshToken: newRefreshToken,
-    user: pick(user, ['_id', 'username', 'role'])
+    user: pick(user, ['_id', 'username', 'role', 'avatar'])
   };
 };
 

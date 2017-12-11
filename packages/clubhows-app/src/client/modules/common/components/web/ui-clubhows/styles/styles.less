@@ -1,0 +1,113 @@
+@import 'antd';
+
+html {
+  min-height: 100%;
+  position: relative;
+}
+
+body {
+  margin-bottom: 40px;
+}
+
+.nav-link active {
+  color: #000000;
+}
+
+@primary-color          : #5eb8dc;
+//@info-color             : @blue-6;
+//@success-color          : @green-6;
+//@processing-color       : @primary-color;
+//@error-color            : @red-6;
+//@highlight-color        : @red-6;
+//@warning-color          : @gold-6;
+//@normal-color           : #d9d9d9;
+
+// Background color for `<body>`
+@body-background        : #fff;
+// Base background color for most components
+@component-background   : #fff;
+@font-family-no-number  : -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family            : "Helvetica Neue For Number", @font-family-no-number;
+@code-family            : Consolas, Menlo, Courier, monospace;
+@heading-color          : fade(#000, 85%);
+@text-color             : fade(#000, 65%);
+@text-color-secondary   : fade(#000, 45%);
+@heading-color-dark     : fade(#fff, 100%);
+@text-color-dark        : fade(#fff,85%);
+@text-color-secondary-dark: fade(#fff, 65%);
+@font-size-base         : 14px;
+@font-size-lg           : @font-size-base + 2px;
+@font-size-sm           : 12px;
+@line-height-base       : 1.5;
+@border-radius-base     : 4px;
+@border-radius-sm       : 2px;
+
+// vertical paddings
+@padding-lg    : 24px; // containers
+@padding-md    : 16px; // small containers and buttons
+@padding-sm    : 12px; // Form controls and items
+@padding-xs    : 8px;  // small items
+
+// The background colors for active and hover states for things like
+// list items or table cells.
+@item-active-bg         : @primary-1;
+@item-hover-bg          : @primary-1;
+
+// Buttons
+@btn-font-weight        : 400;
+@btn-border-radius-base : @border-radius-base;
+@btn-border-radius-sm   : @border-radius-base;
+
+@btn-primary-color      : #fff;
+@btn-primary-bg         : @primary-color;
+
+@btn-default-color      : @text-color;
+@btn-default-bg         : #fff;
+@btn-default-border     : @border-color-base;
+
+@btn-danger-color       : @error-color;
+@btn-danger-bg          : @background-color-base;
+@btn-danger-border      : @border-color-base;
+
+@btn-disable-color      : @disabled-color;
+@btn-disable-bg         : @disabled-bg;
+@btn-disable-border     : @border-color-base;
+
+@btn-padding-base       : 0 @padding-md - 1px;
+@btn-font-size-lg       : @font-size-base;
+@btn-font-size-sm       : @font-size-base;
+@btn-padding-lg         : @btn-padding-base;
+@btn-padding-sm         : 0 @padding-xs - 1px;
+
+@btn-height-base        : 32px;
+@btn-height-lg          : 40px;
+@btn-height-sm          : 24px;
+
+@btn-circle-size        : @btn-height-base;
+@btn-circle-size-lg     : @btn-height-lg;
+@btn-circle-size-sm     : @btn-height-sm;
+
+@btn-group-border       : @primary-5;
+
+// Layout
+@layout-body-background      : #fff;
+@layout-header-background    : #fff;
+@layout-footer-background    : #fff;
+@layout-header-height        : 3rem;
+@layout-header-padding       : 0 2rem;
+@layout-footer-padding       : 1rem 2rem;
+@layout-sider-padding       : 2rem 4rem;
+@layout-sider-background     : @layout-header-background;
+@layout-trigger-height       : 48px;
+@layout-trigger-background   : #002140;
+@layout-trigger-color        : #fff;
+@layout-zero-trigger-width   : 36px;
+@layout-zero-trigger-height  : 42px;
+
+
+// Menu
+// ---
+@menu-dark-bg: @layout-header-background;
+@menu-dark-submenu-bg: #000c17;
+@menu-collapsed-width: 80px;
+@menu-inline-border-right: none;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { Route, NavLink } from 'react-router-dom';
-import { MenuItem } from '../common/components/web';
+import { MenuItem, Button } from '../common/components/web';
 import Profile from './containers/Profile';
 import Users from './components/Users';
 import UserEdit from './containers/UserEdit';
@@ -60,18 +60,16 @@ export default new Feature({
     </MenuItem>
   ],
   navItemRight: [
-    <MenuItem key="/profile">
+    <div>
       <AuthNav scope="user">
         <AuthProfile />
       </AuthNav>
-    </MenuItem>,
-    <MenuItem key="/login">
       <AuthLogout>
         <NavLink to="/login" className="nav-link" activeClassName="active">
-          Log In
+          <Button>Log In</Button>
         </NavLink>
       </AuthLogout>
-    </MenuItem>
+    </div>
   ],
   reducer: { user: reducers },
   middleware: tokenMiddleware,

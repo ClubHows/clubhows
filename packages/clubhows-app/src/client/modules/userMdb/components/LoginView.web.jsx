@@ -38,7 +38,7 @@ class LoginView extends React.PureComponent {
     );
 
     return (
-      <PageLayout>
+      <PageLayout navSider={false}>
         {renderMetaData()}
         <LayoutCenter>
           <h1 className="text-center">Log In</h1>

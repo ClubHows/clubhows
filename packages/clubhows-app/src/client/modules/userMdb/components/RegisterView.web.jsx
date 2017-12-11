@@ -38,7 +38,7 @@ class RegisterView extends React.PureComponent {
 
   render() {
     return (
-      <PageLayout>
+      <PageLayout navSider={false}>
         {this.renderMetaData()}
         <div>
           <Row>
