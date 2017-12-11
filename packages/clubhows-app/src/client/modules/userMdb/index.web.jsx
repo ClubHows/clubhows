@@ -45,9 +45,9 @@ export default new Feature({
     <AuthRoute exact path="/profile" scope="user" component={Profile} />,
     <AuthRoute exact path="/users" scope="admin" component={Users} />,
     <Route exact path="/users/:id" component={UserEdit} />,
-    <AuthLoggedInRoute exact path="/register" redirect="/profile" component={Register} />,
-    <AuthLoggedInRoute exact path="/login" redirect="/profile" component={Login} />,
-    <Route exact path="/forgot-password" component={ForgotPassword} />,
+    <AuthLoggedInRoute exact path="/register" redirect="/dashboard" component={Register} />,
+    <AuthLoggedInRoute exact path="/login" redirect="/dashboard" component={Login} />,
+    <AuthLoggedInRoute exact path="/forgot-password" redirect="/dashboard" component={ForgotPassword} />,
     <Route exact path="/reset-password/:token" component={ResetPassword} />
   ],
   navItem: [
