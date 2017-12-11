@@ -7,6 +7,7 @@ import log from '../../../../common/log';
 
 export const createTokens = async (user, secret, refreshSecret) => {
   let tokenUser = pick(user, ['_id', 'username', 'role', 'avatar']);
+  log('s.userMdB.auth 10:', tokenUser);
   tokenUser.fullName = user.firstName ? `${user.firstName} ${user.lastName}` : null;
 
   const createToken = jwt.sign(
@@ -34,7 +35,6 @@ export const createTokens = async (user, secret, refreshSecret) => {
 
 export const refreshTokens = async (token, refreshToken, User, SECRET) => {
   let userId = -1;
-  log(User);
 
   try {
     const { user } = jwt.decode(refreshToken);
@@ -43,7 +43,10 @@ export const refreshTokens = async (token, refreshToken, User, SECRET) => {
     return {};
   }
 
+  log('s.userMdB.auth 46:', user);
+
   const user = await User.getUserWithPassword(userId);
+  log('s.userMdB.auth 49:', user);
   if (!user) {
     return {};
   }
@@ -75,7 +78,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
     e.setError('email', 'Please enter a valid e-mail.');
     e.throwIf();
   }
-  log(user);
+  log('s.userMdB.auth81:', user);
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     // bad password
@@ -99,7 +102,7 @@ export const tryLogin = async (email, password, User, SECRET) => {
 };
 
 export const tryLoginSerial = async (serial, User, SECRET) => {
-  log(User);
+  log('s.userMdB.auth 102:', User);
   try {
     const certAuth = await User.getUserWithSerial(serial);
 
