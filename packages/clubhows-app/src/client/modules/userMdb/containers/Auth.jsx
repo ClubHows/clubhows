@@ -6,7 +6,10 @@ import { Route, Redirect, NavLink, withRouter } from 'react-router-dom';
 import { withCookies, Cookies } from 'react-cookie';
 import decode from 'jwt-decode';
 
+import { Avatar, Button } from '../../common/components/web';
+
 import log from '../../../../common/log';
+
 import CURRENT_USER_QUERY from '../graphql/CurrentUserQuery.graphql';
 import LOGOUT from '../graphql/Logout.graphql';
 
@@ -47,7 +50,7 @@ const checkAuth = (cookies, scope) => {
   return true;
 };
 
-const profileName = cookies => {
+const profile = cookies => {
   let token = null;
 
   if (cookies && cookies.get('x-token')) {
@@ -63,8 +66,10 @@ const profileName = cookies => {
   }
 
   try {
-    const { user: { username, fullName } } = decode(token);
-    return fullName ? fullName : username;
+    log('UserMDB.Auth 69:', decode(token));
+    const { user: { username, fullName, avatar } } = decode(token);
+    const displayName = fullName ? fullName : username;
+    return { displayName, avatar };
   } catch (e) {
     return '';
   }
@@ -80,9 +85,20 @@ AuthNav.propTypes = {
 };
 
 const AuthProfile = withCookies(({ cookies }) => {
+  const { displayName, avatar } = profile(cookies);
   return checkAuth(cookies) ? (
-    <NavLink to="/profile" className="nav-link" activeClassName="active">
-      {profileName(cookies)}
+    <NavLink
+      to="/profile"
+      className="nav-link"
+      activeClassName="active"
+      style={{ marginRight: '1rem', lineHeight: '2rem' }}
+    >
+      <Avatar
+        src={avatar}
+        size="small"
+        style={{ marginRight: '0.5rem', lineHeight: '2rem', position: 'relative', top: '6px' }}
+      />
+      {displayName}
     </NavLink>
   ) : null;
 });
@@ -107,13 +123,7 @@ AuthLoggedIn.propTypes = {
 };
 
 const AuthLogout = ({ children, cookies, logout }) => {
-  return checkAuth(cookies) ? (
-    <a href="#" onClick={() => logout()} className="nav-link">
-      Logout
-    </a>
-  ) : (
-    children
-  );
+  return checkAuth(cookies) ? <Button onClick={() => logout()}>Logout</Button> : children;
 };
 
 AuthLogout.propTypes = {
@@ -162,13 +172,6 @@ const AuthLogoutWithApollo = withCookies(
     )
   )
 );
-
-AuthLoggedIn.propTypes = {
-  component: PropTypes.func,
-  cookies: PropTypes.instanceOf(Cookies),
-  label: PropTypes.string,
-  to: PropTypes.string
-};
 
 const AuthRoute = withCookies(({ component: Component, cookies, scope, ...rest }) => {
   return (

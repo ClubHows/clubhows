@@ -44,7 +44,7 @@ class ForgotPasswordView extends React.Component {
     );
 
     return (
-      <PageLayout>
+      <PageLayout navSider={false}>
         {renderMetaData()}
         <div>
           <Row>
