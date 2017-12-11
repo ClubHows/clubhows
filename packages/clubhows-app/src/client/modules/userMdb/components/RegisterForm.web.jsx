@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field, reduxForm } from 'redux-form';
 import url from 'url';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { Form, RenderField, Button, Alert, Row, Col } from '../../common/components/web';
 
 import settings from '../../../../../settings';

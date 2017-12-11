@@ -24,7 +24,7 @@ const renderMetaData = () => (
 
 const LandingView = () => {
   return (
-    <PageLayout>
+    <PageLayout navSider={false}>
       {renderMetaData()}
       <LandingContainer>
         <img src="/clubhows-logo.png" width="200" height="40" alt="ClubHows" />
