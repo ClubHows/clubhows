@@ -7,6 +7,7 @@ import NodeGeocoder from 'node-geocoder';
 import mongodb from '../../../server/mongodb';
 
 import TeamSchema from './Team';
+import UserSchema from '../userMdb/User';
 import log from '../../../common/log';
 
 mongodb();
@@ -40,6 +41,10 @@ export default class Team {
       });
   }
 
+  async getMembersForTeam(memberIds) {
+    return await UserSchema.find({ _id: { $all: [memberIds] } }).select('name avatar');
+  }
+
   async teamsPagination(limit, after) {
     return await TeamSchema.find()
       .select('name')
@@ -49,12 +54,12 @@ export default class Team {
   }
 
   addTeam(args) {
-    log(args);
+    log('team Mongo 52:', args);
     const slug = slugify(args.name, { lower: true });
     return TeamSchema.create({
       _id: uuidv5(slug, process.env.CLUBHOWS_APP_UUID),
       name: args.name,
-      owner: args.owner,
+      members: [args.owner],
       slug: slug
     });
   }

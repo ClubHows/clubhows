@@ -1,5 +1,5 @@
 fragment TeamInfo on Team {
-  id
+  _id
   name
   slug
 }

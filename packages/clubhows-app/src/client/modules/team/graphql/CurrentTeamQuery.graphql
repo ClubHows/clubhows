@@ -1,8 +1,8 @@
 #import "./Team.graphql";
 #import "./Member.graphql";
 
-query currentTeam($id: Int!) {
-  currentTeam(id: $id) {
+query currentTeam {
+  currentTeam {
     ...TeamInfo
     members {
       ...MemberInfo

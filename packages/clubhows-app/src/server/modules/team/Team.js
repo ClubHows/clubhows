@@ -35,7 +35,7 @@ const TeamSchema = new mongoose.Schema({
   members: [
     // eslint-disable-next-line flowtype/no-types-missing-file-annotation
     {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      user: { type: String, ref: 'User' },
       role: {
         type: String,
         required: true,
@@ -68,7 +68,18 @@ TeamSchema.statics = {
     return await this.findOne({ slug: slug }).then(team => team);
   },
   async getByMember(memberId) {
-    return await this.find({ 'members.user': new mongoose.Types.ObjectId(memberId) }).then(team => team);
+    return await this.find({ 'members.user': memberId })
+      .exec()
+      .then(team => {
+        log('team Team 74:', team);
+        const member = typeof team != 'undefined' && team != null && team.length > 0 ? team : 'empty';
+        log('team Team 76:', member);
+        return member;
+      })
+      .catch(err => {
+        log('team Team 78:', err);
+        return 'error occured';
+      });
   },
   async getByLocation(locId) {
     return await this.find({ 'locations._id': new mongoose.Types.ObjectId(locId) }).then(team => team);
@@ -82,4 +93,4 @@ TeamSchema.statics = {
   }
 };
 
-export default mongoose.model('ClubHows1', TeamSchema, 'Team');
+export default mongoose.model('Team', TeamSchema, 'Team');

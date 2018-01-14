@@ -1,3 +1,5 @@
+import DataLoader from 'dataloader';
+
 import Team from './mongodb';
 import schema from './schema.graphqls';
 import createResolvers from './resolvers';
@@ -10,7 +12,10 @@ export default new Feature({
     const team = new Team();
 
     return {
-      Team: team
+      Team: team,
+      loaders: {
+        getMembersForTeam: new DataLoader(team.getMembersForTeam)
+      }
     };
   }
 });

@@ -1,7 +1,7 @@
 type Team {
-  _id: String!
-  name: String!
-  slug: String!
+  _id: String
+  name: String
+  slug: String
   members: [Member]
   locations: [Location]
   createdAt: DateTime!
@@ -37,6 +37,18 @@ type Phone {
   number: String
 }
 
+# Edges for Teams
+type TeamEdges {
+  node: Team
+  cursor: Int
+}
+
+# PageInfo for Teams
+type TeamPageInfo {
+  endCursor: Int
+  hasNextPage: Boolean
+}
+
 extend type Query {
   # Get all teams
   allTeams(orderBy: OrderByUserInput, filter: FilterUserInput): [Team]
@@ -44,7 +56,7 @@ extend type Query {
   allTeamsPagination(limit: Int!, after: Int!): [Team]
   # Get team by id
   teamById(_id: String!): Team
-  # Get current user
+  # Get current team
   currentTeam: Team
   # Get team by member
   teamByMember(memberId: String!, role: String): Team
@@ -55,16 +67,15 @@ extend type Query {
 }
 
 extend type Mutation {
-  createTeam(input: CreateTeamUserInput!): Team!
+  addTeam(input: AddTeamUserInput!): Team!
   addLocation(input: CreateLocationUserInput!): Team!
   removeTeam(_id: String!): Team!
 }
 
 extend type Subscription {}
 
-input CreateTeamUserInput {
+input AddTeamUserInput {
   name: String!
-  owner: String!
 }
 
 input CreateLocationUserInput {

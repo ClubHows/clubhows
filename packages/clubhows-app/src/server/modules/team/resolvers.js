@@ -5,6 +5,24 @@ import log from '../../../common/log';
 
 import TeamSchema from './Team';
 
+async function getTeamMembers(obj, context) {
+  obj.map(async member => {
+    log('team reso 10: ', member);
+    const members = await context.User.getUser(member.user);
+    await log('team reso 12: ', members);
+    return members;
+  });
+}
+
+async function addTeamMembers(obj, context) {
+  obj.map(async member => {
+    log('team reso 10: ', member);
+    const members = await context.User.getUser(member.user);
+    await log('team reso 12: ', members);
+    return members;
+  });
+}
+
 export default pubsub => ({
   Query: {
     teamById(obj, args, context) {
@@ -13,11 +31,17 @@ export default pubsub => ({
     teamByMember(obj, args, context) {
       return context.Team.teamByMember(args);
     },
-    currentTeam(obj, args, context) {
+    async currentTeam(obj, args, context) {
+      log('team reso 26: ', context.user);
       if (context.user) {
-        return context.Team.teamByMember(context.user._id);
-      } else {
-        return null;
+        let membersArray = [];
+        let currentTeam = await context.Team.teamByMember(context.user._id);
+        await log('team reso 30: ', currentTeam[0]);
+        let teamMembers = await getTeamMembers(currentTeam[0].members, context);
+        log('team reso 32: ', await teamMembers);
+
+        await log('team reso 34: ', teamMembers);
+        return currentTeam[0];
       }
     },
     teamByLocation(obj, args, context) {
@@ -56,16 +80,27 @@ export default pubsub => ({
           hasNextPage: values[1].count > 0
         }
       };
-    },
-    post(obj, { id }, context) {
-      return context.Post.post(id);
+    }
+  },
+  Team: {
+    members({ ids }, args, context) {
+      return context.loaders.getMembersForTeam.load(ids);
     }
   },
   Mutation: {
-    createTeam(_, args, context) {
+    addTeam(_, args, context) {
       log(args);
       const { name, owner } = args.input;
-      return context.Team.addTeam({ name: name, owner: owner });
+      if (context.user) {
+        const owner = {
+          user: context.user._id,
+          role: owner,
+          location: []
+        };
+        return context.Team.addTeam({ name: name, owner: owner });
+      } else {
+        return 'Not logged In';
+      }
     },
     removeTeam(_, args, context) {
       log(args);

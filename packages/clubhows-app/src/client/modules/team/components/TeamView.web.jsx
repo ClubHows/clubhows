@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
+import _ from 'lodash';
 import { PageLayout, Row, Col } from '../../common/components/web';
+
+import TeamAddForm from './TeamAddForm';
 
 const renderMetaData = () => (
   <Helmet
@@ -15,7 +18,11 @@ const renderMetaData = () => (
   />
 );
 
-const TeamView = ({ loading, currentUser }) => {
+const onSubmit = addTeam => values => {
+  addTeam(values.name);
+};
+
+const TeamView = ({ loading, currentUser, currentTeam, addTeam }) => {
   if (loading && !currentUser) {
     return (
       <PageLayout>
@@ -23,14 +30,14 @@ const TeamView = ({ loading, currentUser }) => {
         <div className="text-center">Loading...</div>
       </PageLayout>
     );
-  } else if (currentUser) {
+  } else if (_.get(currentTeam, ['_id'])) {
     return (
       <PageLayout>
         {renderMetaData()}
         <Row>
-          <Col xs={{ size: 6, offset: 3 }}>
-            <h1 className="text-center">Your Team</h1>
-            <p>User ID: {currentUser.id}</p>
+          <Col>
+            <h1 className="text-center">Team: {currentTeam.name}</h1>
+            <p>Team ID: {currentTeam._id}</p>
           </Col>
         </Row>
       </PageLayout>
@@ -39,7 +46,8 @@ const TeamView = ({ loading, currentUser }) => {
     return (
       <PageLayout>
         {renderMetaData()}
-        <h2>No current user logged in</h2>
+        <h2>You don&rsquo;t have any teams. Add one!</h2>
+        <TeamAddForm onSubmit={onSubmit(addTeam)} />
       </PageLayout>
     );
   }
@@ -47,7 +55,9 @@ const TeamView = ({ loading, currentUser }) => {
 
 TeamView.propTypes = {
   loading: PropTypes.bool.isRequired,
-  currentUser: PropTypes.object
+  currentUser: PropTypes.object,
+  currentTeam: PropTypes.object,
+  addTeam: PropTypes.func.isRequired
 };
 
 export default TeamView;
